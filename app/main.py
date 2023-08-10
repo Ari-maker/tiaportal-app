@@ -11,6 +11,7 @@ from System.IO import DirectoryInfo, FileInfo
 import Siemens.Engineering as tia
 import Siemens.Engineering.HW.Features as hwf
 import Siemens.Engineering.Compiler as comp
+import Siemens.Engineering.SW as sw
 import os
 
 import time
@@ -25,6 +26,8 @@ import ipaddress
 counter = 0;
 _typeArr = []
 _nameArr = []
+
+myproject = ''
 
 def async_func(_type, _name):  
     print("tiaportal")
@@ -41,6 +44,7 @@ def async_func(_type, _name):
        print(_path)
        #myproject = mytia.Projects.Create(project_path, project_name)
        project_path = FileInfo (_path)
+       global myproject
        myproject = mytia.Projects.OpenWithUpgrade(project_path)
        #print(myproject)
     except Exception as e:
@@ -101,7 +105,7 @@ def async_func(_type, _name):
     for device in myproject.Devices:
         
         deviceItemComposition = device.DeviceItems;
-        
+      
         for deviceItem in deviceItemComposition:
             for info in deviceItem.GetAttributeInfos():
                 print(str(device.Name)+': '+str(info.Name))
@@ -159,6 +163,11 @@ def async_func(_type, _name):
     # # Compiling HW & SW
     # 
 
+   
+  
+
+
+
     # Defining method to recursively print error messages
     def print_comp(messages):
         for msg in messages:
@@ -169,19 +178,23 @@ def async_func(_type, _name):
             print(f'Warning Count: {msg.WarningCount}')
             print(f'Error Count: {msg.ErrorCount}\n')
             print_comp(msg.Messages)
-        
-    # Compiling all devices
-    for device in myproject.Devices:
-        compile_service =  device.GetService[comp.ICompilable]()
-        result = compile_service.Compile()
-                    
-        #Printing results from compiler
-        print(f'State: {result.State}')
-        print(f'Warning Count: {result.WarningCount}')
-        print(f'Error Count: {result.ErrorCount}')
-        print_comp(result.Messages)   
 
-            
+
+    try:
+ 
+        # Compiling all devices
+        for device in myproject.Devices:
+            compile_service =  device.GetService[comp.ICompilable]()
+            result = compile_service.Compile()
+                        
+            #Printing results from compiler
+            print(f'State: {result.State}')
+            print(f'Warning Count: {result.WarningCount}')
+            print(f'Error Count: {result.ErrorCount}')
+            print_comp(result.Messages)   
+
+    except Exception:
+        pass       
 
 
     #
@@ -200,27 +213,30 @@ def async_func(_type, _name):
             print(f'Warning Count: {msg.WarningCount}')
             print(f'Error Count: {msg.ErrorCount}\n')
             print_comp(msg.Messages)
-            
-                
-        #compiling all sw in all devices
-    for device in myproject.Devices:
-        device_item_aggregation = device.DeviceItems
-        for deviceitem in device_item_aggregation:   
-                software_container = tia.IEngineeringServiceProvider(deviceitem).GetService[hwf.SoftwareContainer]()
-                if (software_container != None):
-                    print(f'compiling: {deviceitem.Name}')
-                    software_base = software_container.Software
-                    
-                    compile_service =  software_base.GetService[comp.ICompilable]()
-                    result = compile_service.Compile()
-                    
-                    #Printing results from compiler
-                    print(f'State: {result.State}')
-                    print(f'Warning Count: {result.WarningCount}')
-                    print(f'Error Count: {result.ErrorCount}')
-                    print_comp(result.Messages)   
 
 
+    try:
+
+            #compiling all sw in all devices
+        for device in myproject.Devices:
+            device_item_aggregation = device.DeviceItems
+            for deviceitem in device_item_aggregation:   
+                    software_container = tia.IEngineeringServiceProvider(deviceitem).GetService[hwf.SoftwareContainer]()
+                    if (software_container != None):
+                        print(f'compiling: {deviceitem.Name}')
+                        software_base = software_container.Software
+                        
+                        compile_service =  software_base.GetService[comp.ICompilable]()
+                        result = compile_service.Compile()
+                        
+                        #Printing results from compiler
+                        print(f'State: {result.State}')
+                        print(f'Warning Count: {result.WarningCount}')
+                        print(f'Error Count: {result.ErrorCount}')
+                        print_comp(result.Messages)   
+
+    except Exception:
+        pass  
 
     #
     # # Exporting 
@@ -272,7 +288,7 @@ def async_func(_type, _name):
 
 
 
-    myproject.Save()
+    #myproject.Save()
 
 
 
@@ -332,10 +348,25 @@ def tiaportal():
 
 @app.route("/")
 def index():  
-    _type = '6SL3210-1KE11-8AF2/4.7.13'
-    _name = 'Device_1'
-    return render_template("index.html", _type=_type, _name=_name)
+    return render_template("index.html")
   
+
+@app.route("/devices/")
+def devices():  
+
+    global myproject
+
+
+    deviceItem = myproject.Devices[0].DeviceItems[1]
+
+    software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
+    software_base = software_container.Software
+    print(str(deviceItem.Name))  
+    print(str(software_base.Name))  
+    plc_block = software_base.BlockGroup.Blocks.Find("testi")
+    plc_block.Export(FileInfo('C:\\export\\uusi\\'), tia.ExportOptions.WithDefaults)
+
+    return render_template("devices.html")
 
   
 if __name__ == "__main__":
