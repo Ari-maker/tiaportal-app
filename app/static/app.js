@@ -34,3 +34,26 @@ $.ajax({
          }
       });
    }  
+
+   function addList(value) {   
+        $('#type').val(value);
+    }  
+    
+    $.getJSON('static/data.json', function(data) {
+        console.log(JSON.stringify(data.devices));
+
+        let arr = data.devices;
+
+        var wrapper = document.getElementsByClassName("list-group");
+
+        var myHTML = '';
+      
+        for (var i = 0; i < arr.length; i++) {
+         
+          myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
+
+        }
+      
+        wrapper[0].innerHTML = myHTML
+      
+    });
