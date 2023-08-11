@@ -1,9 +1,11 @@
 # tiaportal-app
 
-1. Mene kansioon Flask\app\xml ja kopio sinaSpeed2.xml tiedosto kansioon C:\export\result
+1. TIA Portalissa täytyy olla yksi PLC toimiakseen
 
-2. Avaa komentokehote ja kirjoita pip install flask
+2. Mene kansioon Flask\app\xml ja kopio sinaSpeed2.xml tiedosto kansioon C:\export\result
 
-3. Klikkaa wsgi.py tiedostoa
+3. Avaa komentokehote ja kirjoita pip install flask
 
-4. Valmis
+4. Klikkaa wsgi.py tiedostoa
+
+5. Valmis
