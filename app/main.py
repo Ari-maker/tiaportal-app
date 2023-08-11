@@ -319,7 +319,15 @@ def tiaportal():
     return render_template("index.html")
 
 @app.route("/")
-def index():  
+def index(): 
+    # resetoidaan
+    global mypath 
+    mypath = ''
+    global _typeArr
+    _typeArr = []
+    global _nameArr
+    _nameArr = []
+
     return render_template("index.html")
   
 
