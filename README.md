@@ -1,6 +1,6 @@
 # tiaportal-app
 
-1. TIA Portalissa täytyy olla yksi PLC toimiakseen
+1. TIA Portal projektissa täytyy olla vähintään yksi PLC 
 
 2. Mene kansioon Flask\app\xml ja kopio sinaSpeed2.xml tiedosto kansioon C:\export\result
 
