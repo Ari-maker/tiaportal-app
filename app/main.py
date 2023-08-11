@@ -321,6 +321,8 @@ def tiaportal():
 @app.route("/")
 def index(): 
     # resetoidaan
+    global myproject
+    myproject = ''
     global mypath 
     mypath = ''
     global _typeArr
