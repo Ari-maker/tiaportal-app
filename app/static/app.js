@@ -13,7 +13,7 @@ $(document).ready(function() {
          }
          ,
         error: function (xhr, ajaxOptions, thrownError) {
-            document.getElementById('error').innerHTML = "There must be at least one device";
+            document.getElementById('error').innerHTML = "There must be at least one device. Project path missing?";
             document.getElementById('error-message').style.display = "block";
       }
       });
@@ -39,6 +39,16 @@ $.ajax({
         $('#type').val(value);
     }  
     
+    function openproject() {   
+      $.ajax({
+         type: 'GET',
+         url: '/openproject/',
+         success: function(response) {
+            
+         }
+      });
+    }  
+
     $.getJSON('static/data.json', function(data) {
         console.log(JSON.stringify(data.devices));
 

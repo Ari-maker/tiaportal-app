@@ -11,7 +11,6 @@ from System.IO import DirectoryInfo, FileInfo
 import Siemens.Engineering as tia
 import Siemens.Engineering.HW.Features as hwf
 import Siemens.Engineering.Compiler as comp
-import Siemens.Engineering.SW as sw
 import os
 
 import time
@@ -23,13 +22,14 @@ import ipaddress
 #_type = '6SL3210-1KE11-8AF2/4.7.13';
 #_name = 'Device_1';
 
-counter = 0;
 _typeArr = []
 _nameArr = []
 
 myproject = ''
 
-def async_func(_type, _name):  
+mypath = ''
+
+def async_func(_type, _name, _path):  
     print("tiaportal")
     mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
     processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
@@ -40,7 +40,6 @@ def async_func(_type, _name):
     
  
     try:
-       _path = askopenfilename(filetypes=(("Project files", "*.ap18"),("All files", "*.*") ))
        print(_path)
        #myproject = mytia.Projects.Create(project_path, project_name)
        project_path = FileInfo (_path)
@@ -238,70 +237,39 @@ def async_func(_type, _name):
     except Exception:
         pass  
 
-    #
-    # # Exporting 
-    #     
-
-
-    #Optional code to remove xml files that may allready exist on your computer
-    try:
-        os.remove('C:\\Openness\\PKI\\TIA\\exports\\dummy.xml')
-    except OSError:
-        pass
-    try:
-        os.remove('C:\\Openness\\PKI\\TIA\\exports\\Main.xml')
-    except OSError:
-        pass
-
-
-    # exporting "main" from PLC1
-
-    #export_path = FileInfo ('C:\\Openness\\PKI\\TIA\\exports\\Main.xml')
-    software_container = tia.IEngineeringServiceProvider(PLC1.DeviceItems[1]).GetService[hwf.SoftwareContainer]()
-    software_base = software_container.Software
-    plc_block = software_base.BlockGroup.Blocks.Find("Main")
-    plc_block.Export(FileInfo('C:\\Openness\\PKI\\TIA\\exports\\Main.xml'), tia.ExportOptions.WithDefaults)
-
-    # Exporting tagtable from PLC1
-    tag_table_group = software_base.TagTableGroup
-    #creating a dummy table to export
-    tagtable = tag_table_group.TagTables.Create("dummy")
-    tagtable = tag_table_group.TagTables.Find("dummy")
-    tagtable.Export(FileInfo('C:\\Openness\\PKI\\TIA\\exports\\dummy.xml'), tia.ExportOptions.WithDefaults)
-
-
-    #deleting block and tag table in project 
-    plc_block.Delete()
-    tagtable.Delete()
-
-
-    #
-    # # Importing
-    # 
-
-
-
-    # Importing the xml files back in to the project
-    #tag_table_group.TagTables.Import(FileInfo('C:\\Openness\\PKI\\TIA\\exports\\dummy.xml'), tia.ImportOptions.Override)
-    #software_base.BlockGroup.Blocks.Import(FileInfo('C:\\Openness\\PKI\\TIA\\exports\\Main.xml'), tia.ImportOptions.Override)
-
-
-
 
     #myproject.Save()
 
-
-
-
     #myproject.Close()
-
-
-
 
     #mytia.Dispose()
 
+
+    # lohkojen luonti
+    deviceItem = myproject.Devices[0].DeviceItems[1]
+
+    software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
+    software_base = software_container.Software
+    print(str(deviceItem.Name))  
+    print(str(software_base.Name))  
+    #plc_block = software_base.BlockGroup.Blocks.Find("sinaSpeed2")
+    #plc_block.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2.xml'), tia.ExportOptions.WithDefaults)
+    plc_block = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\sinaSpeed2.xml'), tia.ImportOptions.Override)
+
+
     print('Demo complete hit enter to exit')
   
+
+@app.route("/openproject/", methods=["GET"])
+def openproject():
+    print('project path')
+    global mypath
+    mypath = askopenfilename(filetypes=(("Project files", "*.ap18"),("All files", "*.*") ))
+
+
+    return render_template("index.html")
+
+
 @app.route("/add/", methods=["POST"])
 def add():
 
@@ -322,25 +290,29 @@ def add():
 
     return jsonify({'type':_type, 'name':_name})
  
-    #return redirect('/')
-    return render_template("index.html", _type=_type, _name=_name)
-  
-  
+ 
 @app.route("/tiaportal/", methods=["POST"])
 def tiaportal():
-
+    
     global _typeArr
     global _nameArr
+    global mypath
 
     print(_typeArr)
     print(_nameArr)
+    print(mypath)
     
-    #if (_typeArr is None or _nameArr is None):
-    if not (_typeArr or _nameArr): 
+    if not mypath:
         return 400
 
+    if not _typeArr: 
+        return 400
     
-    x = threading.Thread(target=async_func, args=(_typeArr,_nameArr,))
+    if not _nameArr:
+        return 400
+   
+    
+    x = threading.Thread(target=async_func, args=(_typeArr,_nameArr,mypath,))
     x.start()
      
     #return redirect('/')
@@ -354,17 +326,11 @@ def index():
 @app.route("/devices/")
 def devices():  
 
-    global myproject
+    #global myproject
 
 
-    deviceItem = myproject.Devices[0].DeviceItems[1]
 
-    software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
-    software_base = software_container.Software
-    print(str(deviceItem.Name))  
-    print(str(software_base.Name))  
-    plc_block = software_base.BlockGroup.Blocks.Find("testi")
-    plc_block.Export(FileInfo('C:\\export\\uusi\\'), tia.ExportOptions.WithDefaults)
+
 
     return render_template("devices.html")
 
