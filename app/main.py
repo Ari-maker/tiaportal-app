@@ -73,7 +73,20 @@ def async_func(_type, _name, _path):
         #print(str(_name.index(n)))
         #PN_mlfb = 'OrderNumber:'+ str(_type.index(n));
         #PN = myproject.Devices.CreateWithItem(PN_mlfb,  str(_name.index(n)), None)
-      
+
+    # tsekataan onko yhtakaan laitetta olemassa jos ei ole niin luodaan PLC
+    count = 0
+    for device in myproject.Devices:
+        count+=1
+
+    print('Devices: '+ str(count))
+
+    if count == 0:
+        print ('Creating PLC1')
+        PLC1_mlfb = 'OrderNumber:6ES7 513-1AL02-0AB0/V2.6'
+        PLC1 = myproject.Devices.CreateWithItem(PLC1_mlfb, 'PLC1', 'PLC1')
+  
+
     # display indices in the list
     for i in range(len(_type)):
         print(i, _type[i])
@@ -128,6 +141,10 @@ def async_func(_type, _name, _path):
     #n_interfaces[0].Nodes[0].SetAttribute('Address','140.80.0.200')
     #n_interfaces[1].Nodes[0].SetAttribute('Address','140.80.0.202')
     #n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
+
+    if count == 0:
+        n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
+
     
     add = n_interfaces[0].Nodes[0].GetAttribute('Address')
     
@@ -139,7 +156,8 @@ def async_func(_type, _name, _path):
     # Creating subnet and IO system on the first item in the list
     # Connects to subnet for remaining devices, if IO device it gets assigned to the IO system
     for n in n_interfaces:
-        if n_interfaces.index(n) == -1:
+        if count == 0:
+            count = 1
             subnet = n_interfaces[0].Nodes[0].CreateAndConnectToSubnet("Profinet")
             #subnet = n_interfaces[0].Nodes[0].CreateAndConnectToSubnet("PN/IE_1")
             ioSystem = n_interfaces[0].IoControllers[0].CreateIoSystem("PNIO");
@@ -288,7 +306,7 @@ def add():
     
     print(_nameArr)
 
-    return jsonify({'type':_type, 'name':_name})
+    return jsonify({'type':_typeArr, 'name':_nameArr})
  
  
 @app.route("/tiaportal/", methods=["POST"])
@@ -331,18 +349,6 @@ def index():
     _nameArr = []
 
     return render_template("index.html")
-  
-
-@app.route("/devices/")
-def devices():  
-
-    #global myproject
-
-
-
-
-
-    return render_template("devices.html")
 
   
 if __name__ == "__main__":

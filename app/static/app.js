@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
    $('#tiaportal').submit(function(event) {
       event.preventDefault();
       $.ajax({
@@ -9,7 +10,9 @@ $(document).ready(function() {
             $('#type').val('');
             $('#name').val('');
      
-            alert('Starting TIA Portal!');
+            //alert('Starting TIA Portal!');
+            $("#myModal").modal();
+           
          }
          ,
         error: function (xhr, ajaxOptions, thrownError) {
@@ -29,8 +32,27 @@ $.ajax({
          success: function(response) {
             $('#type').val('');
             $('#name').val('');
-            document.getElementById('editType').innerHTML = response.type;
-            document.getElementById('editName').innerHTML = response.name;
+        
+
+            let typeArr = response.type;
+            let nameArr = response.name;
+
+            const laskuri = document.getElementsByClassName("laskuri");
+            const panel = document.getElementsByClassName("panel panel-primary");
+    
+            let myHTML = '';
+          
+            for (let i = 0; i < typeArr.length; i++) {
+             
+              myHTML += '<div class="panel-heading">'+nameArr[i]+'</div>';
+              myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
+    
+            }
+          
+            panel[0].innerHTML = myHTML
+
+            laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
+
          }
       });
    }  
@@ -49,16 +71,17 @@ $.ajax({
       });
     }  
 
+
     $.getJSON('static/data.json', function(data) {
         console.log(JSON.stringify(data.devices));
 
         let arr = data.devices;
 
-        var wrapper = document.getElementsByClassName("list-group");
+        const wrapper = document.getElementsByClassName("list-group");
 
-        var myHTML = '';
+        let myHTML = '';
       
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
          
           myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
 
@@ -67,3 +90,5 @@ $.ajax({
         wrapper[0].innerHTML = myHTML
       
     });
+
+
