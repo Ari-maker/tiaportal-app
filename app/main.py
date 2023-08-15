@@ -280,12 +280,15 @@ def async_func(_type, _name, _path):
     software_base = software_container.Software
     print(str(deviceItem.Name))  
     print(str(software_base.Name))  
-    #plc_block = software_base.BlockGroup.Blocks.Find("DrivesData")
-    #plc_block.Export(FileInfo('C:\\export\\tulos\\DrivesData.xml'), tia.ExportOptions.WithDefaults)
+    #plc_block = software_base.BlockGroup.Blocks.Find("sinaSpeed2")
+    #plc_block.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2.xml'), tia.ExportOptions.WithDefaults)
+    #plc_block0 = software_base.BlockGroup.Blocks.Find("sinaSpeed2_DB")
+    #plc_block0.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2_DB.xml'), tia.ExportOptions.WithDefaults)
 
 
     plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\Drives.xml'), tia.ImportOptions.Override)
     plc_block4 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\sinaSpeed2.xml'), tia.ImportOptions.Override)
+    plc_block5 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\sinaSpeed2_DB.xml'), tia.ImportOptions.Override)
 
     PlcTagTableGroup = software_base.TagTableGroup
     PlcTagTableGroup.TagTables.Import(FileInfo('C:\export\\result\\example.xml'), tia.ImportOptions.Override)
