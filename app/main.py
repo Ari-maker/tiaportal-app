@@ -168,12 +168,22 @@ def async_func(_type, _name, _path):
           
             add = t
           
-            subnet = myproject.Subnets.Find("Profinet");
-            ioSystem = subnet.IoSystems[0];
-            n_interfaces[n_interfaces.index(n)].Nodes[0].ConnectToSubnet(subnet)
-            if (n_interfaces[n_interfaces.index(n)].IoConnectors.Count) >> 0:
-                n_interfaces[n_interfaces.index(n)].IoConnectors[0].ConnectToIoSystem(ioSystem);
+            #subnet = myproject.Subnets.Find("Profinet");
+            subnet = ''
 
+            for subnets in myproject.Subnets:
+                subnet = subnets
+
+
+            try:
+
+                ioSystem = subnet.IoSystems[0];
+                n_interfaces[n_interfaces.index(n)].Nodes[0].ConnectToSubnet(subnet)
+                if (n_interfaces[n_interfaces.index(n)].IoConnectors.Count) >> 0:
+                    n_interfaces[n_interfaces.index(n)].IoConnectors[0].ConnectToIoSystem(ioSystem);
+            
+            except Exception:
+                pass    
 
 
     #
@@ -270,12 +280,19 @@ def async_func(_type, _name, _path):
     software_base = software_container.Software
     print(str(deviceItem.Name))  
     print(str(software_base.Name))  
-    #plc_block = software_base.BlockGroup.Blocks.Find("sinaSpeed2")
-    #plc_block.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2.xml'), tia.ExportOptions.WithDefaults)
-    plc_block = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\sinaSpeed2.xml'), tia.ImportOptions.Override)
+    #plc_block = software_base.BlockGroup.Blocks.Find("DrivesData")
+    #plc_block.Export(FileInfo('C:\\export\\tulos\\DrivesData.xml'), tia.ExportOptions.WithDefaults)
 
 
-    print('Demo complete hit enter to exit')
+    plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\Drives.xml'), tia.ImportOptions.Override)
+    plc_block4 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\sinaSpeed2.xml'), tia.ImportOptions.Override)
+
+    PlcTagTableGroup = software_base.TagTableGroup
+    PlcTagTableGroup.TagTables.Import(FileInfo('C:\export\\result\\example.xml'), tia.ImportOptions.Override)
+
+    plc_block3 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\DrivesData.xml'), tia.ImportOptions.Override)
+
+    print('Demo complete!')
   
 
 @app.route("/openproject/", methods=["GET"])
@@ -295,6 +312,9 @@ def add():
             _type =  request.form['type']
             _name =  request.form['name']
  
+
+    if _type == '' or _name == '':
+        return 400
  
     global _typeArr
     _typeArr.append(_type)
