@@ -70,10 +70,10 @@
             <Member Name="refSpeed" Datatype="Real" />
             <Member Name="configAxis" Datatype="Word" />
             <Member Name="hwidStw" Datatype="HW_SUBMODULE">
-              <StartValue>266</StartValue>
+              <StartValue>275</StartValue>
             </Member>
             <Member Name="hwidZsw" Datatype="HW_SUBMODULE">
-              <StartValue>266</StartValue>
+              <StartValue>275</StartValue>
             </Member>
           </Member>
           <Member Name="status" Datatype="Struct">
