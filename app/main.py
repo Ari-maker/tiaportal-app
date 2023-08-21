@@ -19,6 +19,7 @@ from tkinter.filedialog import askopenfilename
 import ipaddress
 import xml.etree.ElementTree as ET
 
+ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
 
 #_type = '6SL3210-1KE11-8AF2/4.7.13';
 #_name = 'Device_1';
@@ -30,7 +31,7 @@ myproject = ''
 
 mypath = ''
 
-counter = 4
+counter = 3
 
 def async_func(_type, _name, _path):  
     print("tiaportal")
@@ -387,182 +388,45 @@ def xml():
 
     print('XML')
 
-    #fields = """
-    #<fields>
-    #    <field>
-    #        <column/>
-    #        <description/>
-    #        <datatype/>
-     #       <length/>
-    #    </field>
-    #    <field>
-     #       <column/>
-      #      <description/>
-     #       <datatype/>
-     #       <length/>
-    #    </field>
-    #</fields>
-    #"""
+    tree = ET.parse('test.xml')
+    root = tree.getroot()
 
-    fields = """
-<Document>
-  <Engineering version="V18" />
-  <DocumentInfo>
-    <Created>2023-08-17T07:23:58.0636782Z</Created>
-    <ExportSetting>WithDefaults</ExportSetting>
-    <InstalledProducts>
-      <Product>
-        <DisplayName>Totally Integrated Automation Portal</DisplayName>
-        <DisplayVersion>V18 Update 2</DisplayVersion>
-      </Product>
-      <OptionPackage>
-        <DisplayName>TIA Portal Openness</DisplayName>
-        <DisplayVersion>V18 Update 2</DisplayVersion>
-      </OptionPackage>
-      <OptionPackage>
-        <DisplayName>TIA Portal Version Control Interface</DisplayName>
-        <DisplayVersion>V18</DisplayVersion>
-      </OptionPackage>
-      <Product>
-        <DisplayName>SINAMICS Startdrive Advanced</DisplayName>
-        <DisplayVersion>V18</DisplayVersion>
-      </Product>
-      <OptionPackage>
-        <DisplayName>SINAMICS Startdrive G130, G150, S120, S150, SINAMICS MV, S210</DisplayName>
-        <DisplayVersion>V18</DisplayVersion>
-      </OptionPackage>
-      <OptionPackage>
-        <DisplayName>SINAMICS Startdrive G110M, G120, G120C, G120D, G120P, G115D</DisplayName>
-        <DisplayVersion>V18</DisplayVersion>
-      </OptionPackage>
-      <Product>
-        <DisplayName>STEP 7 Professional</DisplayName>
-        <DisplayVersion>V18 Update 2</DisplayVersion>
-      </Product>
-      <OptionPackage>
-        <DisplayName>STEP 7 Safety</DisplayName>
-        <DisplayVersion>V18</DisplayVersion>
-      </OptionPackage>
-      <Product>
-        <DisplayName>WinCC Advanced / Unified PC</DisplayName>
-        <DisplayVersion>V18 Update 2</DisplayVersion>
-      </Product>
-    </InstalledProducts>
-  </DocumentInfo>
-  <SW.Blocks.OB ID="0">
-    <AttributeList>
-      <AutoNumber>true</AutoNumber>
-      <HeaderAuthor />
-      <HeaderFamily />
-      <HeaderName />
-      <HeaderVersion>0.1</HeaderVersion>
-      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
-  <Section Name="Input">
-    <Member Name="Initial_Call" Datatype="Bool" Accessibility="Public" Informative="true">
-      <Comment>
-        <MultiLanguageText Lang="en-US">Initial call of this OB</MultiLanguageText>
-      </Comment>
-    </Member>
-    <Member Name="Remanence" Datatype="Bool" Accessibility="Public" Informative="true">
-      <Comment>
-        <MultiLanguageText Lang="en-US">=True, if remanent data are available</MultiLanguageText>
-      </Comment>
-    </Member>
-  </Section>
-  <Section Name="Temp" />
-  <Section Name="Constant" />
-</Sections></Interface>
-      <IsIECCheckEnabled>false</IsIECCheckEnabled>
-      <MemoryLayout>Optimized</MemoryLayout>
-      <Name>Drives</Name>
-      <Namespace />
-      <Number>124</Number>
-      <ProgrammingLanguage>LAD</ProgrammingLanguage>
-      <SecondaryType>ProgramCycle</SecondaryType>
-      <SetENOAutomatically>false</SetENOAutomatically>
-    </AttributeList>
-    <ObjectList>
-      <MultilingualText ID="1" CompositionName="Comment">
-        <ObjectList>
-          <MultilingualTextItem ID="2" CompositionName="Items">
-            <AttributeList>
-              <Culture>en-US</Culture>
-              <Text />
-            </AttributeList>
-          </MultilingualTextItem>
-        </ObjectList>
-      </MultilingualText>
-      <SW.Blocks.CompileUnit ID="3" CompositionName="CompileUnits">
-      </SW.Blocks.CompileUnit>
-      <SW.Blocks.CompileUnit ID="A" CompositionName="CompileUnits">
-        <AttributeList>
-          <NetworkSource />
-          <ProgrammingLanguage>LAD</ProgrammingLanguage>
-        </AttributeList>
-        <ObjectList>
-          <MultilingualText ID="B" CompositionName="Comment">
-            <ObjectList>
-              <MultilingualTextItem ID="C" CompositionName="Items">
-                <AttributeList>
-                  <Culture>en-US</Culture>
-                  <Text />
-                </AttributeList>
-              </MultilingualTextItem>
-            </ObjectList>
-          </MultilingualText>
-          <MultilingualText ID="D" CompositionName="Title">
-            <ObjectList>
-              <MultilingualTextItem ID="E" CompositionName="Items">
-                <AttributeList>
-                  <Culture>en-US</Culture>
-                  <Text />
-                </AttributeList>
-              </MultilingualTextItem>
-            </ObjectList>
-          </MultilingualText>
-        </ObjectList>
-      </SW.Blocks.CompileUnit>
-      <MultilingualText ID="F" CompositionName="Title">
-        <ObjectList>
-          <MultilingualTextItem ID="G" CompositionName="Items">
-            <AttributeList>
-              <Culture>en-US</Culture>
-              <Text>"Main Program Sweep (Cycle)"</Text>
-            </AttributeList>
-          </MultilingualTextItem>
-        </ObjectList>
-      </MultilingualText>
-    </ObjectList>
-  </SW.Blocks.OB>
-</Document>
-"""
-
-    #Insert new field into <fields>
-    root = ET.fromstring(fields)
+    #root = ET.fromstring(fields)
     #new_field = ET.Element("field")
+
+    
 
     def counterFunc():
         global counter
         counter = counter+1
         return str(counter)
+    
+    #ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
 
     for item in root.findall('SW.Blocks.OB'):
         itemid=item.find('ObjectList')
         
 
-        for i in range(2):
+        db_array = ["Pumppu", "kuljetin"]
+        loop = 3
+        loopMax = 1
+        for i in range(loopMax):
 
-          mum = i + 3
+          if loopMax == 1:
+            num = loop 
+          else:
+            num = loop - i
+
 
           objectList = f"""
-              <SW.Blocks.CompileUnit ID="{mum}" CompositionName="CompileUnits">
+              <SW.Blocks.CompileUnit ID="{num}" CompositionName="CompileUnits">
           <AttributeList>
-            <NetworkSource><FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4">
+            <NetworkSource><FlgNet linkki="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4">
     <Parts>
       <Access Scope="GlobalVariable" UId="21">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="enableAxis" />
         </Symbol>
@@ -570,7 +434,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="22">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="ackError" />
         </Symbol>
@@ -578,7 +442,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="23">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="speedSp" />
         </Symbol>
@@ -586,7 +450,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="24">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="refSpeed" />
         </Symbol>
@@ -594,7 +458,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="25">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="configAxis" />
         </Symbol>
@@ -602,7 +466,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="26">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="hwidStw" />
         </Symbol>
@@ -610,7 +474,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="27">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="control" />
           <Component Name="hwidZsw" />
         </Symbol>
@@ -618,7 +482,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="28">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="status" />
           <Component Name="axisEnabled" />
         </Symbol>
@@ -626,7 +490,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="29">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="status" />
           <Component Name="lockout" />
         </Symbol>
@@ -634,7 +498,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="30">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="status" />
           <Component Name="actVelocity" />
         </Symbol>
@@ -642,7 +506,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="31">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="status" />
           <Component Name="error" />
         </Symbol>
@@ -650,7 +514,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="32">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="status" />
           <Component Name="status" />
         </Symbol>
@@ -658,7 +522,7 @@ def xml():
       <Access Scope="GlobalVariable" UId="33">
         <Symbol>
           <Component Name="DrivesData" />
-          <Component Name="kuljetin" />
+          <Component Name="{db_array[i]}" />
           <Component Name="status" />
           <Component Name="diagId" />
         </Symbol>
@@ -755,14 +619,32 @@ def xml():
         </SW.Blocks.CompileUnit>
           """
 
+     
           new_field = ET.fromstring(objectList)
           itemid.insert(1, new_field)
 
 
-    tree = ET.ElementTree(root)
-    tree.write(open('XMLtest.xml','w'), encoding='unicode')
+    tree.write("C:\\export\\result\XMLtest.xml", encoding='unicode')
+    #tree.write("XMLtest.xml", encoding='unicode')
 
 
+    with open("C:\\export\\result\XMLtest.xml") as f:
+      lines = f.readlines()
+
+
+    lines[0] = "<Document>\n"
+
+    index = 0
+    for toisto in lines:
+        if lines[index].find('linkki'):
+          lines[index] = lines[index].replace('linkki', 'xmlns')
+          index = index + 1
+
+
+    with open("C:\\export\\result\XMLtest.xml", "w") as f:
+        f.writelines(lines)
+
+  
     return render_template("index.html")
 
 
