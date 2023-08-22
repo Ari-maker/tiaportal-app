@@ -10,6 +10,7 @@ clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\
 from System.IO import DirectoryInfo, FileInfo
 import Siemens.Engineering as tia
 import Siemens.Engineering.HW.Features as hwf
+import Siemens.Engineering.SW.Units as units
 import Siemens.Engineering.Compiler as comp
 import os
 
@@ -281,18 +282,29 @@ def async_func(_type, _name, _path):
     deviceItem = myproject.Devices[0].DeviceItems[1]
 
     software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
+   
     software_base = software_container.Software
     print(str(deviceItem.Name))  
     print(str(software_base.Name))  
-    #plc_block = software_base.BlockGroup.Blocks.Find("Drives3")
-    #plc_block.Export(FileInfo('C:\\export\\tulos\\Drives3.xml'), tia.ExportOptions.WithDefaults)
+    #plc_block = software_base.BlockGroup.Blocks.Find("DrivesData")
+    #plc_block.Export(FileInfo('C:\\export\\tulos\\DrivesData.xml'), tia.ExportOptions.WithDefaults)
     #plc_block0 = software_base.BlockGroup.Blocks.Find("sinaSpeed2_DB")
     #plc_block0.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2_DB.xml'), tia.ExportOptions.WithDefaults)
 
 
+
+    
+    unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\export\\result\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
+    plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\DrivesData.xml'), tia.ImportOptions.Override)
     plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\XMLtest.xml'), tia.ImportOptions.Override)
     
-    
+
+
+
+    #unit = software_base.TypeGroup.Types.Find("typeSinaSpeedInterface")
+    #unit.Export(FileInfo('C:\\export\\tulos\\typeSinaSpeedInterface.xml'), tia.ExportOptions.WithDefaults)
+
+
     blockComposition = software_base.BlockGroup.Blocks
     isAutoNumber = True
     iDBName="SinaSpeed_DB"
@@ -341,32 +353,6 @@ def add():
     return jsonify({'type':_typeArr, 'name':_nameArr})
  
  
-@app.route("/tiaportal/", methods=["POST"])
-def tiaportal():
-    
-    global _typeArr
-    global _nameArr
-    global mypath
-
-    print(_typeArr)
-    print(_nameArr)
-    print(mypath)
-    
-    if not mypath:
-        return 400
-
-    if not _typeArr: 
-        return 400
-    
-    if not _nameArr:
-        return 400
-   
-    
-    x = threading.Thread(target=async_func, args=(_typeArr,_nameArr,mypath,))
-    x.start()
-     
-    #return redirect('/')
-    return render_template("index.html")
 
 @app.route("/")
 def index(): 
@@ -383,8 +369,8 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/xml/")
-def xml():
+#@app.route("/xml/")
+def getXML():
 
     print('XML')
 
@@ -401,15 +387,14 @@ def xml():
         counter = counter+1
         return str(counter)
     
-    #ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
-
+  
     for item in root.findall('SW.Blocks.OB'):
         itemid=item.find('ObjectList')
         
-
-        db_array = ["Pumppu", "kuljetin"]
+        global _nameArr
+        db_array = _nameArr
         loop = 3
-        loopMax = 1
+        loopMax = len(_nameArr)
         for i in range(loopMax):
 
           if loopMax == 1:
@@ -647,6 +632,36 @@ def xml():
   
     return render_template("index.html")
 
+@app.route("/tiaportal/", methods=["POST"])
+def tiaportal():
+    
+    global _typeArr
+    global _nameArr
+    global mypath
+
+    print(_typeArr)
+    print(_nameArr)
+    print(mypath)
+    
+    if not mypath:
+        return 400
+
+    if not _typeArr: 
+        return 400
+    
+    if not _nameArr:
+        return 400
+   
+    
+    getXML()
+
+    x = threading.Thread(target=async_func, args=(_typeArr,_nameArr,mypath,))
+    x.start()
+
+   
+     
+    #return redirect('/')
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
