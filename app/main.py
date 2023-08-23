@@ -27,6 +27,7 @@ ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/Network
 
 _typeArr = []
 _nameArr = []
+_consoleArr = []
 
 myproject = ''
 
@@ -36,9 +37,12 @@ counter = 3
 
 def async_func(_type, _name, _path):  
     print("tiaportal")
+    global _consoleArr
+    _consoleArr.append("tiaportal")
     mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
     processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
     print (processes)
+    _consoleArr.append(str(processes))
     # Creating a new project. Using try/except in case project allready exists
  
     #project_path = DirectoryInfo ('C:\\Openness\\PKI')
@@ -46,6 +50,7 @@ def async_func(_type, _name, _path):
  
     try:
        print(_path)
+       _consoleArr.append(_path)
        #myproject = mytia.Projects.Create(project_path, project_name)
        project_path = FileInfo (_path)
        global myproject
@@ -53,6 +58,7 @@ def async_func(_type, _name, _path):
        #print(myproject)
     except Exception as e:
        print (e)
+       _consoleArr.append(e)
        pass
 
     #Adding the main components
@@ -85,18 +91,22 @@ def async_func(_type, _name, _path):
         count+=1
 
     print('Devices: '+ str(count))
+    _consoleArr.append('Devices: '+ str(count))
 
     if count == 0:
         print ('Creating PLC1')
-        PLC1_mlfb = 'OrderNumber:6ES7 513-1AL02-0AB0/V2.6'
+        _consoleArr.append('Creating PLC1')
+        PLC1_mlfb = 'OrderNumber:6ES7 511-1AL03-0AB0/V3.0'
         PLC1 = myproject.Devices.CreateWithItem(PLC1_mlfb, 'PLC1', 'PLC1')
   
 
     # display indices in the list
     for i in range(len(_type)):
         print(i, _type[i])
+        _consoleArr.append(str(_type[i]))
         print(i, _name[i])
-        PN_mlfb = 'OrderNumber:'+ str(_type[i]);
+        _consoleArr.append(str(_name[i]))
+        PN_mlfb = 'OrderNumber:'+ str(_type[i])
         PN = myproject.Devices.CreateWithItem(PN_mlfb,  str(_name[i]), None)
 
     # Adding IO cards to the PLC and IO station
@@ -121,11 +131,12 @@ def async_func(_type, _name, _path):
     n_interfaces = []
     for device in myproject.Devices:
         
-        deviceItemComposition = device.DeviceItems;
+        deviceItemComposition = device.DeviceItems
       
         for deviceItem in deviceItemComposition:
             for info in deviceItem.GetAttributeInfos():
                 print(str(device.Name)+': '+str(info.Name))
+                _consoleArr.append(str(device.Name)+': '+str(info.Name))
             
         
         device_item_aggregation = device.DeviceItems[1].DeviceItems
@@ -154,7 +165,7 @@ def async_func(_type, _name, _path):
     add = n_interfaces[0].Nodes[0].GetAttribute('Address')
     
     print(add)
-
+    _consoleArr.append(str(add))
 
     #n_interfaces[1].Nodes[0].SetAttribute('Address', a)
 
@@ -182,7 +193,7 @@ def async_func(_type, _name, _path):
 
             try:
 
-                ioSystem = subnet.IoSystems[0];
+                ioSystem = subnet.IoSystems[0]
                 n_interfaces[n_interfaces.index(n)].Nodes[0].ConnectToSubnet(subnet)
                 if (n_interfaces[n_interfaces.index(n)].IoConnectors.Count) >> 0:
                     n_interfaces[n_interfaces.index(n)].IoConnectors[0].ConnectToIoSystem(ioSystem);
@@ -210,6 +221,14 @@ def async_func(_type, _name, _path):
             print(f'Warning Count: {msg.WarningCount}')
             print(f'Error Count: {msg.ErrorCount}\n')
             print_comp(msg.Messages)
+  
+            _consoleArr.append(str(f'Path: {msg.Path}'))
+            _consoleArr.append(str(f'DateTime: {msg.DateTime}'))
+            _consoleArr.append(str(f'State: {msg.State}'))
+            _consoleArr.append(str(f'Description: {msg.Description}'))
+            _consoleArr.append(str(f'Warning Count: {msg.WarningCount}'))
+            _consoleArr.append(str(f'Error Count: {msg.ErrorCount}\n'))
+            _consoleArr.append(str(msg.Messages))
 
 
     try:
@@ -224,6 +243,12 @@ def async_func(_type, _name, _path):
             print(f'Warning Count: {result.WarningCount}')
             print(f'Error Count: {result.ErrorCount}')
             print_comp(result.Messages)   
+
+            
+            _consoleArr.append(str(f'State: {result.State}'))
+            _consoleArr.append(str(f'Warning Count: {result.WarningCount}'))
+            _consoleArr.append(str(f'Error Count: {result.ErrorCount}'))
+            _consoleArr.append(str(result.Messages)) 
 
     except Exception:
         pass       
@@ -246,6 +271,14 @@ def async_func(_type, _name, _path):
             print(f'Error Count: {msg.ErrorCount}\n')
             print_comp(msg.Messages)
 
+         
+            _consoleArr.append(str(f'Path: {msg.Path}'))
+            _consoleArr.append(str(f'DateTime: {msg.DateTime}'))
+            _consoleArr.append(str(f'State: {msg.State}'))
+            _consoleArr.append(str(f'Description: {msg.Description}'))
+            _consoleArr.append(str(f'Warning Count: {msg.WarningCount}'))
+            _consoleArr.append(str(f'Error Count: {msg.ErrorCount}\n'))
+            _consoleArr.append(str(msg.Messages))
 
     try:
 
@@ -256,6 +289,7 @@ def async_func(_type, _name, _path):
                     software_container = tia.IEngineeringServiceProvider(deviceitem).GetService[hwf.SoftwareContainer]()
                     if (software_container != None):
                         print(f'compiling: {deviceitem.Name}')
+                        _consoleArr.append(f'compiling: {deviceitem.Name}')
                         software_base = software_container.Software
                         
                         compile_service =  software_base.GetService[comp.ICompilable]()
@@ -266,6 +300,13 @@ def async_func(_type, _name, _path):
                         print(f'Warning Count: {result.WarningCount}')
                         print(f'Error Count: {result.ErrorCount}')
                         print_comp(result.Messages)   
+
+                        
+
+                        _consoleArr.append(str(f'State: {result.State}'))
+                        _consoleArr.append(str(f'Warning Count: {result.WarningCount}'))
+                        _consoleArr.append(str(f'Error Count: {result.ErrorCount}'))
+                        _consoleArr.append(str(result.Messages))  
 
     except Exception:
         pass  
@@ -286,17 +327,21 @@ def async_func(_type, _name, _path):
     software_base = software_container.Software
     print(str(deviceItem.Name))  
     print(str(software_base.Name))  
-    #plc_block = software_base.BlockGroup.Blocks.Find("DrivesData")
-    #plc_block.Export(FileInfo('C:\\export\\tulos\\DrivesData.xml'), tia.ExportOptions.WithDefaults)
+
+    _consoleArr.append(str(deviceItem.Name))  
+    _consoleArr.append(str(software_base.Name))  
+
+    #plc_block = software_base.BlockGroup.Blocks.Find("Drives")
+    #plc_block.Export(FileInfo('C:\\export\\tulos\\Drives.xml'), tia.ExportOptions.WithDefaults)
     #plc_block0 = software_base.BlockGroup.Blocks.Find("sinaSpeed2_DB")
     #plc_block0.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2_DB.xml'), tia.ExportOptions.WithDefaults)
 
 
 
-    
+    plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\XMLtest.xml'), tia.ImportOptions.Override)
     unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\export\\result\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
     plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\DrivesData.xml'), tia.ImportOptions.Override)
-    plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\XMLtest.xml'), tia.ImportOptions.Override)
+  
     
 
 
@@ -312,13 +357,27 @@ def async_func(_type, _name, _path):
     number = 1
 
     iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
-    iDBName="SinaSpeed_DB_1"
-    iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
+
+
+    iDBName="SinaParaS_DB"
+    instanceOfName = "SinaParaS"
+    iDbBlock2 = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
+
+    # SinaParaS
+
+    # loop
+
+   # index = 0
+    #for device in myproject.Devices:
+     # if index != 0:
+          
+
 
 
     print('Demo complete!')
-  
+    _consoleArr.append('Demo complete!')
 
+  
 @app.route("/openproject/", methods=["GET"])
 def openproject():
     print('project path')
@@ -365,6 +424,7 @@ def index():
     _typeArr = []
     global _nameArr
     _nameArr = []
+   
 
     return render_template("index.html")
 
@@ -604,9 +664,150 @@ def getXML():
         </SW.Blocks.CompileUnit>
           """
 
+          objectList2 = f"""
+              <SW.Blocks.CompileUnit ID="{counterFunc()}" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource><FlgNet linkki="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4">
+  <Parts>
+    <Access Scope="LiteralConstant" UId="21">
+      <Constant>
+        <ConstantType>UInt</ConstantType>
+        <ConstantValue>2000</ConstantValue>
+      </Constant>
+    </Access>
+    <Access Scope="GlobalVariable" UId="22">
+      <Symbol>
+        <Component Name="DrivesData" />
+        <Component Name="{db_array[i]}" />
+        <Component Name="control" />
+        <Component Name="hwidStw" />
+      </Symbol>
+    </Access>
+    <Access Scope="GlobalVariable" UId="23">
+      <Symbol>
+        <Component Name="DrivesData" />
+        <Component Name="{db_array[i]}" />
+        <Component Name="control" />
+        <Component Name="refSpeed" />
+      </Symbol>
+    </Access>
+    <Part Name="SinaParaS" Version="1.1" UId="24">
+      <Instance Scope="GlobalVariable" UId="25">
+        <Component Name="SinaParaS_DB" />
+      </Instance>
+    </Part>
+  </Parts>
+  <Wires>
+    <Wire UId="41">
+      <Powerrail />
+      <NameCon UId="24" Name="en" />
+    </Wire>
+    <Wire UId="42">
+      <OpenCon UId="26" />
+      <NameCon UId="24" Name="Start" />
+    </Wire>
+    <Wire UId="43">
+      <OpenCon UId="27" />
+      <NameCon UId="24" Name="ReadWrite" />
+    </Wire>
+    <Wire UId="44">
+      <IdentCon UId="21" />
+      <NameCon UId="24" Name="Parameter" />
+    </Wire>
+    <Wire UId="45">
+      <OpenCon UId="28" />
+      <NameCon UId="24" Name="Index" />
+    </Wire>
+    <Wire UId="46">
+      <OpenCon UId="29" />
+      <NameCon UId="24" Name="ValueWrite1" />
+    </Wire>
+    <Wire UId="47">
+      <OpenCon UId="30" />
+      <NameCon UId="24" Name="ValueWrite2" />
+    </Wire>
+    <Wire UId="48">
+      <OpenCon UId="31" />
+      <NameCon UId="24" Name="AxisNo" />
+    </Wire>
+    <Wire UId="49">
+      <IdentCon UId="22" />
+      <NameCon UId="24" Name="hardwareId" />
+    </Wire>
+    <Wire UId="50">
+      <NameCon UId="24" Name="Ready" />
+      <OpenCon UId="32" />
+    </Wire>
+    <Wire UId="51">
+      <NameCon UId="24" Name="Busy" />
+      <OpenCon UId="33" />
+    </Wire>
+    <Wire UId="52">
+      <NameCon UId="24" Name="Done" />
+      <OpenCon UId="34" />
+    </Wire>
+    <Wire UId="53">
+      <NameCon UId="24" Name="ValueRead1" />
+      <IdentCon UId="23" />
+    </Wire>
+    <Wire UId="54">
+      <NameCon UId="24" Name="ValueRead2" />
+      <OpenCon UId="35" />
+    </Wire>
+    <Wire UId="55">
+      <NameCon UId="24" Name="Format" />
+      <OpenCon UId="36" />
+    </Wire>
+    <Wire UId="56">
+      <NameCon UId="24" Name="ErrorNo" />
+      <OpenCon UId="37" />
+    </Wire>
+    <Wire UId="57">
+      <NameCon UId="24" Name="Error" />
+      <OpenCon UId="38" />
+    </Wire>
+    <Wire UId="58">
+      <NameCon UId="24" Name="ErrorId" />
+      <OpenCon UId="39" />
+    </Wire>
+    <Wire UId="59">
+      <NameCon UId="24" Name="DiagId" />
+      <OpenCon UId="40" />
+    </Wire>
+  </Wires>
+</FlgNet></NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="{counterFunc()}" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="{counterFunc()}" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="{counterFunc()}" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="{counterFunc()}" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-US</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+          """
      
           new_field = ET.fromstring(objectList)
           itemid.insert(1, new_field)
+
+          new_field2 = ET.fromstring(objectList2)
+          itemid.insert(2, new_field2)
 
 
     tree.write("C:\\export\\result\XMLtest.xml", encoding='unicode')
@@ -638,6 +839,8 @@ def tiaportal():
     global _typeArr
     global _nameArr
     global mypath
+    global _consoleArr
+    _consoleArr = []
 
     print(_typeArr)
     print(_nameArr)
@@ -663,6 +866,19 @@ def tiaportal():
     #return redirect('/')
     return render_template("index.html")
 
+@app.route("/console/")
+def console():
+     return render_template("console.html")
+
+@app.route("/getConsoleData/")
+def consoleData():
+   
+     global _consoleArr
+
+     print(_consoleArr)
+
+     return jsonify({'consoleArr':str(_consoleArr)})
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

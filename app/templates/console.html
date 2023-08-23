@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>App</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../static/console.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="../static/console.js"></script>
+</head>
+<body>
+  <!-- Navbar Section -->
+  <nav class="navbar navbar-expand-sm bg-dark navbar-light">
+    <!-- Brand/logo -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapse_Navbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapse_Navbar">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+             <a class="nav-link text-white" href="/console/">Console</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center">
+<div class="col-md-10">
+            <div class="card card-bordered">
+              <div class="card-header">
+                <h4 class="card-title"><strong>Console</strong></h4>
+                <a class="btn btn-xs btn-secondary" href="/console/" data-abc="true">Clear</a>
+              </div>
+
+
+              <div class="ps-container ps-theme-default ps-active-y" id="chat-content" style="overflow-y: scroll !important; height:400px !important;">
+                <div class="media media-chat">
+                  <div class="media-body">
+                    <p>Welcome to the console.</p>
+                    <p>Type 'help' to get more information.</p>
+                  </div>
+                </div>
+
+              
+              <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;"></div></div></div>
+
+              <div class="publisher bt-1 border-light">
+             
+                <input class="publisher-input" id="command" type="text" placeholder="Write command" onkeypress="addCommand(event)">
+               
+                <span class="publisher-btn file-group">
+                  <i class="fa fa-paperclip file-browser"></i>
+                  <input type="file">
+                </span>
+                <a class="publisher-btn" href="#" data-abc="true"><i class="fa fa-smile"></i></a>
+                <a class="publisher-btn text-info" href="#" data-abc="true"><i class="fa fa-paper-plane"></i></a>
+              </div>
+
+             </div>
+          </div>
+          </div>
+          </div>
+          </div>
+</body>
+</html>
