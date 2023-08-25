@@ -11,7 +11,34 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="../static/app.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script> -->
+ <!-- <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script> -->
+  <!--<script type="text/python" id="files" src="https://aritenhunen.000webhostapp.com/python/client.py"></script>-->
+  <!--<script id="client" type="text/python" src="client"></script>-->
+  <!--<script src="openness.brython.js" id="demo2"></script>-->
+
+<!--
+  <script type="text/python">
+
+    #import clr
+    from pythonnet import load
+    load()
+
+
+    from browser import document
+    from browser.widgets.dialog import InfoDialog
+
+
+    def click(ev):
+      InfoDialog("Hello", f"Hello, {document['zone'].value} !")
+
+    # bind event 'click' on button to function echo
+    document["echo"].bind("click", click)
+
+  </script>
+-->
 </head>
+<!-- onload="brython()" -->
 <body>
   <!-- Navbar Section -->
   <nav class="navbar navbar-expand-sm bg-dark navbar-light">
@@ -65,7 +92,7 @@
                       </div>
                       <div class="row">
                         <div class="col">
-                          <button class="btn btn-primary" type="submit">
+                          <button class="btn btn-primary" type="submit" id="change_me">
                             Start
                           </button>
                           <input class="btn btn-primary" type="button" onclick="openproject()" value="Open project">
@@ -120,4 +147,5 @@
     </div>
   </div>
 </body>
+
 </html>

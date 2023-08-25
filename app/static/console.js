@@ -73,10 +73,13 @@ $(document).ready(function() {
 
                 let newArray = result.concat(keys);
     
-                arr = newArray;
+                
 
                 if (response.consoleArr == '[]')
+                    if (keys.length == 0)
                     arr = []
+                else
+                    //arr = newArray;
 
                 loopData();
     

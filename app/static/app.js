@@ -22,6 +22,27 @@ $(document).ready(function() {
       });
    });
 
+   
+   $.getJSON('static/data.json', function(data) {
+      console.log(JSON.stringify(data.devices));
+
+      let arr = data.devices;
+
+      const wrapper = document.getElementsByClassName("list-group");
+
+      let myHTML = '';
+    
+      for (let i = 0; i < arr.length; i++) {
+       
+        myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
+
+      }
+    
+      wrapper[0].innerHTML = myHTML
+    
+  });
+
+
 });
 
 function add() {   
@@ -70,25 +91,3 @@ $.ajax({
          }
       });
     }  
-
-
-    $.getJSON('static/data.json', function(data) {
-        console.log(JSON.stringify(data.devices));
-
-        let arr = data.devices;
-
-        const wrapper = document.getElementsByClassName("list-group");
-
-        let myHTML = '';
-      
-        for (let i = 0; i < arr.length; i++) {
-         
-          myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
-
-        }
-      
-        wrapper[0].innerHTML = myHTML
-      
-    });
-
-

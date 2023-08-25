@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, url_for, redirect, jsonify
+from flask import Flask, render_template, request, url_for, redirect, jsonify, request, make_response
+import json
 from email.mime.text import MIMEText
-import smtplib
+
+
 from email.message import EmailMessage
 app = Flask(__name__)
+
   
   
 import clr
@@ -880,5 +883,19 @@ def consoleData():
      return jsonify({'consoleArr':str(_consoleArr)})
     
 
+@app.route('/result/', methods = ['GET'])
+def determine_escalation():
+  
+    # _typeArr,_nameArr,mypath
+
+    return jsonify({'typeArr':_typeArr,'nameArr':_nameArr,"mypath":mypath})
+    #return jsonify({'consoleArr':"str(_consoleArr)"})
+
+@app.route('/openness.brython.js/', methods = ['GET'])
+def getFile():
+    file = open('../lib/openness.brython.js', 'r').read()
+    return file
+
+    
 if __name__ == "__main__":
     app.run(debug=True)
