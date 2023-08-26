@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, url_for, redirect, jsonify
+from flaskwebgui import FlaskUI # import FlaskUI
 from email.mime.text import MIMEText
 import smtplib
 from email.message import EmailMessage
 app = Flask(__name__)
+
   
   
 import clr
@@ -881,4 +883,7 @@ def consoleData():
     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
+    #ui.run()
+     FlaskUI(app=app, port=3000, width=1280 , height=800, server="flask").run()
+     #ui = FlaskUI(app, width=500, height=500) # add app and parameters

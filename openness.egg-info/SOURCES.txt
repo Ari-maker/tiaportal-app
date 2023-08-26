@@ -1,0 +1,8 @@
+README.md
+setup.py
+openness.egg-info/PKG-INFO
+openness.egg-info/SOURCES.txt
+openness.egg-info/dependency_links.txt
+openness.egg-info/not-zip-safe
+openness.egg-info/requires.txt
+openness.egg-info/top_level.txt
