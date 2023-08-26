@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V18" />
+  <DocumentInfo>
+    <Created>2023-08-22T11:16:04.1404114Z</Created>
+    <ExportSetting>WithDefaults</ExportSetting>
+    <InstalledProducts>
+      <Product>
+        <DisplayName>Totally Integrated Automation Portal</DisplayName>
+        <DisplayVersion>V18 Update 2</DisplayVersion>
+      </Product>
+      <OptionPackage>
+        <DisplayName>TIA Portal Openness</DisplayName>
+        <DisplayVersion>V18 Update 2</DisplayVersion>
+      </OptionPackage>
+      <OptionPackage>
+        <DisplayName>TIA Portal Version Control Interface</DisplayName>
+        <DisplayVersion>V18</DisplayVersion>
+      </OptionPackage>
+      <Product>
+        <DisplayName>SINAMICS Startdrive Advanced</DisplayName>
+        <DisplayVersion>V18</DisplayVersion>
+      </Product>
+      <OptionPackage>
+        <DisplayName>SINAMICS Startdrive G130, G150, S120, S150, SINAMICS MV, S210</DisplayName>
+        <DisplayVersion>V18</DisplayVersion>
+      </OptionPackage>
+      <OptionPackage>
+        <DisplayName>SINAMICS Startdrive G110M, G120, G120C, G120D, G120P, G115D</DisplayName>
+        <DisplayVersion>V18</DisplayVersion>
+      </OptionPackage>
+      <Product>
+        <DisplayName>STEP 7 Professional</DisplayName>
+        <DisplayVersion>V18 Update 2</DisplayVersion>
+      </Product>
+      <OptionPackage>
+        <DisplayName>STEP 7 Safety</DisplayName>
+        <DisplayVersion>V18</DisplayVersion>
+      </OptionPackage>
+      <Product>
+        <DisplayName>WinCC Advanced / Unified PC</DisplayName>
+        <DisplayVersion>V18 Update 2</DisplayVersion>
+      </Product>
+    </InstalledProducts>
+  </DocumentInfo>
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+  <Section Name="None">
+    <Member Name="control" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="enableAxis" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="ackError" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="speedSp" Datatype="Real">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="refSpeed" Datatype="Real">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="configAxis" Datatype="Word">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+        <StartValue>16#003F</StartValue>
+      </Member>
+      <Member Name="hwidStw" Datatype="HW_SUBMODULE">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="hwidZsw" Datatype="HW_SUBMODULE">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+    <Member Name="status" Datatype="Struct">
+      <AttributeList>
+        <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+        <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+        <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+        <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+      </AttributeList>
+      <Member Name="axisEnabled" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="lockout" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="actVelocity" Datatype="Real">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="error" Datatype="Bool">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="status" Datatype="Int">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+      <Member Name="diagId" Datatype="Word">
+        <AttributeList>
+          <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+          <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+        </AttributeList>
+      </Member>
+    </Member>
+  </Section>
+</Sections></Interface>
+      <IsFailsafeCompliant>false</IsFailsafeCompliant>
+      <Name>typeSinaSpeedInterface</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="3" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="4" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-US</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

@@ -1,9 +1,14 @@
 # tiaportal-app
 
-1. Mene kansioon Flask\app\xml ja kopio tiedostot kansioon C:\export\result
+![Alt text](C:\Users\Siemens\Pictures\tia/websivu.png?raw=true "Title")
 
-2. Avaa komentokehote ja kirjoita pip install flask
+1. Liitä Siemens.Engineering.dll kansioon C:\Program Files\Siemens\Automation\Portal V18\PublicAPI\V18
 
-3. Klikkaa wsgi.py tiedostoa
+2. Mene kansioon Flask\app\xml ja kopio tiedostot kansioon C:\export\result
 
-4. Valmis
+3. Asenna python https://www.python.org/downloads/
+
+3. Klikkaa install.sh
+
+4. Käynnistä sovellus klikkaamalla app.py
+
