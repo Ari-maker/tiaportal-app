@@ -10,5 +10,5 @@
 
 3. Klikkaa install.sh
 
-4. Käynnistä sovellus klikkaamalla app.py
+4. Käynnistä sovellus klikkaamalla app.pyw
 
