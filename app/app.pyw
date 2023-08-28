@@ -35,7 +35,7 @@ myproject = ''
 
 mypath = ''
 
-counter = 3
+counter = 4 # 3
 
 def async_func(_type, _name, _path):  
     print("tiaportal")
@@ -354,16 +354,23 @@ def async_func(_type, _name, _path):
 
     blockComposition = software_base.BlockGroup.Blocks
     isAutoNumber = True
-    iDBName="SinaSpeed_DB"
     instanceOfName = "SinaSpeed"
     number = 1
 
-    iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
+    # sinaSpeed
+    index = 0
+    for i in range(len(_name)):
+      iDBName = f"SinaSpeed_DB_{index}"    
+      iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
+      index = index + 1
 
-
-    iDBName="SinaParaS_DB"
+    # sinaSpeed S
+    index = 0
     instanceOfName = "SinaParaS"
-    iDbBlock2 = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
+    for i in range(len(_name)):
+      iDBName = f"SinaParaS_DB_{index}" 
+      iDbBlock2 = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
+      index = index + 1
 
     # SinaParaS
 
@@ -455,8 +462,9 @@ def getXML():
         
         
         db_array = _nameArr
-        loop = 3
+        loop = 4 # 3
         loopMax = len(_nameArr)
+        index = int(len(_nameArr)-1)
         for i in range(loopMax):
 
           if loopMax == 1:
@@ -576,7 +584,7 @@ def getXML():
       </Access>
       <Part Name="SinaSpeed" Version="1.0" UId="34">
         <Instance Scope="GlobalVariable" UId="35">
-          <Component Name="SinaSpeed_DB" />
+          <Component Name="SinaSpeed_DB_{index}" />
         </Instance>
       </Part>
     </Parts>
@@ -695,7 +703,7 @@ def getXML():
     </Access>
     <Part Name="SinaParaS" Version="1.1" UId="24">
       <Instance Scope="GlobalVariable" UId="25">
-        <Component Name="SinaParaS_DB" />
+        <Component Name="SinaParaS_DB_{index}" />
       </Instance>
     </Part>
   </Parts>
@@ -810,6 +818,8 @@ def getXML():
 
           new_field2 = ET.fromstring(objectList2)
           itemid.insert(2, new_field2)
+
+          index = index - 1
 
 
     tree.write("C:\\export\\result\XMLtest.xml", encoding='unicode')
