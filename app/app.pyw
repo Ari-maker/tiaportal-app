@@ -436,13 +436,13 @@ def getXML():
 
     print('XML')
 
-    tree = ET.parse('test.xml')
+    tree = ET.parse('./xmltemplate/test.xml')
     root = tree.getroot()
 
     #root = ET.fromstring(fields)
     #new_field = ET.Element("field")
 
-    
+    global _nameArr
 
     def counterFunc():
         global counter
@@ -453,7 +453,7 @@ def getXML():
     for item in root.findall('SW.Blocks.OB'):
         itemid=item.find('ObjectList')
         
-        global _nameArr
+        
         db_array = _nameArr
         loop = 3
         loopMax = len(_nameArr)
@@ -830,6 +830,82 @@ def getXML():
 
 
     with open("C:\\export\\result\XMLtest.xml", "w") as f:
+        f.writelines(lines)
+
+
+    # DrivesData
+
+    tree = ET.parse('./xmltemplate/DrivesData.xml')
+    root = tree.getroot()
+
+    for item in root.findall('SW.Blocks.GlobalDB'):
+        attributeList=item.find('AttributeList')
+        Interface=attributeList.find('Interface')
+        Sections=Interface.find('Sections')
+        Section=Sections.find('Section')
+
+     
+        db_array = _nameArr
+        loopMax = len(_nameArr)
+
+        for i in range(loopMax):
+
+            member = f"""
+      <Member Name="{db_array[i]}" Datatype="&quot;typeSinaSpeedInterface&quot;" Remanence="NonRetain" Accessibility="Public">
+            <AttributeList>
+              <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+              <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+              <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+              <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+            </AttributeList>
+            <Sections>
+              <Section Name="None">
+                <Member Name="control" Datatype="Struct">
+                  <Member Name="enableAxis" Datatype="Bool" />
+                  <Member Name="ackError" Datatype="Bool" />
+                  <Member Name="speedSp" Datatype="Real" />
+                  <Member Name="refSpeed" Datatype="Real" />
+                  <Member Name="configAxis" Datatype="Word" />
+                  <Member Name="hwidStw" Datatype="HW_SUBMODULE">
+                    <StartValue>266</StartValue>
+                  </Member>
+                  <Member Name="hwidZsw" Datatype="HW_SUBMODULE">
+                    <StartValue>266</StartValue>
+                  </Member>
+                </Member>
+                <Member Name="status" Datatype="Struct">
+                  <Member Name="axisEnabled" Datatype="Bool" />
+                  <Member Name="lockout" Datatype="Bool" />
+                  <Member Name="actVelocity" Datatype="Real" />
+                  <Member Name="error" Datatype="Bool" />
+                  <Member Name="status" Datatype="Int" />
+                  <Member Name="diagId" Datatype="Word" />
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+            """
+            
+            new_field = ET.fromstring(member)
+            Section.insert(1, new_field)
+
+
+    tree.write("C:\\export\\result\DrivesData.xml", encoding='unicode')
+
+    with open("C:\\export\\result\DrivesData.xml") as f:
+      lines = f.readlines()
+
+
+    lines[0] = "<Document>\n"
+
+    index = 0
+    for toisto in lines:
+        if lines[index].find('linkki'):
+          lines[index] = lines[index].replace('linkki', 'xmlns')
+          index = index + 1
+
+
+    with open("C:\\export\\result\DrivesData.xml", "w") as f:
         f.writelines(lines)
 
   
