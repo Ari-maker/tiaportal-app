@@ -14,6 +14,7 @@ import Siemens.Engineering as tia
 import Siemens.Engineering.HW.Features as hwf
 import Siemens.Engineering.SW.Units as units
 import Siemens.Engineering.Compiler as comp
+import Siemens.Engineering.Library as lib
 import os
 
 import time
@@ -323,6 +324,7 @@ def async_func(_type, _name, _path):
 
     # lohkojen luonti
     deviceItem = myproject.Devices[0].DeviceItems[1]
+    
 
     software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
    
@@ -332,6 +334,40 @@ def async_func(_type, _name, _path):
 
     _consoleArr.append(str(deviceItem.Name))  
     _consoleArr.append(str(software_base.Name))  
+
+
+    # channel
+    deviceItem2 = myproject.Devices[1].DeviceItems[1]
+    channels = deviceItem2.Channels
+    for channel in channels:
+      # work with the channel
+      channelNumber = channel.Number
+      ctype = channel.Type
+      ioType = channel.IoType
+      print("ARVOT")
+      print(channelNumber)
+      print(ctype)
+      print(ioType)
+                
+
+
+    # global library
+    availableLibraries = mytia.GlobalLibraries.GetGlobalLibraryInfos()
+
+    for libInfo in availableLibraries:
+          print(" Library Name: {0}", libInfo.Name)
+          print(" Library Path: {0}", libInfo.Path)
+          print(" Library Type: {0}", libInfo.LibraryType)
+          print(" Library IsOpen: {0}", libInfo.IsOpen)
+      
+          if libInfo.Name == "testLib":
+                  libraryOpenedWithInfo = mytia.GlobalLibraries.Open(libInfo)
+                  masterCopy = libraryOpenedWithInfo.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
+                  libBlock = software_base.BlockGroup.Blocks.CreateFrom(masterCopy)
+     
+
+        
+
 
     #plc_block = software_base.BlockGroup.Blocks.Find("Drives")
     #plc_block.Export(FileInfo('C:\\export\\tulos\\Drives.xml'), tia.ExportOptions.WithDefaults)
@@ -354,33 +390,15 @@ def async_func(_type, _name, _path):
 
     blockComposition = software_base.BlockGroup.Blocks
     isAutoNumber = True
-    instanceOfName = "SinaSpeed"
+    instanceOfName = "SinaSpeedTest"
     number = 1
 
-    # sinaSpeed
+    # sinaSpeedTest
     index = 0
     for i in range(len(_name)):
-      iDBName = f"SinaSpeed_DB_{index}"    
+      iDBName = f"Inst{_name[i]}{index}"    
       iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
       index = index + 1
-
-    # sinaSpeed S
-    index = 0
-    instanceOfName = "SinaParaS"
-    for i in range(len(_name)):
-      iDBName = f"SinaParaS_DB_{index}" 
-      iDbBlock2 = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
-      index = index + 1
-
-    # SinaParaS
-
-    # loop
-
-   # index = 0
-    #for device in myproject.Devices:
-     # if index != 0:
-          
-
 
 
     print('Demo complete!')
@@ -474,315 +492,33 @@ def getXML():
 
 
           objectList = f"""
-              <SW.Blocks.CompileUnit ID="{num}" CompositionName="CompileUnits">
-          <AttributeList>
-            <NetworkSource><FlgNet linkki="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4">
-    <Parts>
-      <Access Scope="GlobalVariable" UId="21">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="enableAxis" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="22">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="ackError" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="23">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="speedSp" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="24">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="refSpeed" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="25">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="configAxis" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="26">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="hwidStw" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="27">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="control" />
-          <Component Name="hwidZsw" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="28">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="status" />
-          <Component Name="axisEnabled" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="29">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="status" />
-          <Component Name="lockout" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="30">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="status" />
-          <Component Name="actVelocity" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="31">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="status" />
-          <Component Name="error" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="32">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="status" />
-          <Component Name="status" />
-        </Symbol>
-      </Access>
-      <Access Scope="GlobalVariable" UId="33">
-        <Symbol>
-          <Component Name="DrivesData" />
-          <Component Name="{db_array[i]}" />
-          <Component Name="status" />
-          <Component Name="diagId" />
-        </Symbol>
-      </Access>
-      <Part Name="SinaSpeed" Version="1.0" UId="34">
-        <Instance Scope="GlobalVariable" UId="35">
-          <Component Name="SinaSpeed_DB_{index}" />
-        </Instance>
-      </Part>
-    </Parts>
-    <Wires>
-      <Wire UId="36">
-        <Powerrail />
-        <NameCon UId="34" Name="en" />
-      </Wire>
-      <Wire UId="37">
-        <IdentCon UId="21" />
-        <NameCon UId="34" Name="EnableAxis" />
-      </Wire>
-      <Wire UId="38">
-        <IdentCon UId="22" />
-        <NameCon UId="34" Name="AckError" />
-      </Wire>
-      <Wire UId="39">
-        <IdentCon UId="23" />
-        <NameCon UId="34" Name="SpeedSp" />
-      </Wire>
-      <Wire UId="40">
-        <IdentCon UId="24" />
-        <NameCon UId="34" Name="RefSpeed" />
-      </Wire>
-      <Wire UId="41">
-        <IdentCon UId="25" />
-        <NameCon UId="34" Name="ConfigAxis" />
-      </Wire>
-      <Wire UId="42">
-        <IdentCon UId="26" />
-        <NameCon UId="34" Name="HWIDSTW" />
-      </Wire>
-      <Wire UId="43">
-        <IdentCon UId="27" />
-        <NameCon UId="34" Name="HWIDZSW" />
-      </Wire>
-      <Wire UId="44">
-        <NameCon UId="34" Name="AxisEnabled" />
-        <IdentCon UId="28" />
-      </Wire>
-      <Wire UId="45">
-        <NameCon UId="34" Name="Lockout" />
-        <IdentCon UId="29" />
-      </Wire>
-      <Wire UId="46">
-        <NameCon UId="34" Name="ActVelocity" />
-        <IdentCon UId="30" />
-      </Wire>
-      <Wire UId="47">
-        <NameCon UId="34" Name="Error" />
-        <IdentCon UId="31" />
-      </Wire>
-      <Wire UId="48">
-        <NameCon UId="34" Name="Status" />
-        <IdentCon UId="32" />
-      </Wire>
-      <Wire UId="49">
-        <NameCon UId="34" Name="DiagId" />
-        <IdentCon UId="33" />
-      </Wire>
-    </Wires>
-  </FlgNet></NetworkSource>
-            <ProgrammingLanguage>LAD</ProgrammingLanguage>
-          </AttributeList>
-          <ObjectList>
-            <MultilingualText ID="{counterFunc()}" CompositionName="Comment">
-              <ObjectList>
-                <MultilingualTextItem ID="{counterFunc()}" CompositionName="Items">
-                  <AttributeList>
-                    <Culture>en-US</Culture>
-                    <Text />
-                  </AttributeList>
-                </MultilingualTextItem>
-              </ObjectList>
-            </MultilingualText>
-            <MultilingualText ID="{counterFunc()}" CompositionName="Title">
-              <ObjectList>
-                <MultilingualTextItem ID="{counterFunc()}" CompositionName="Items">
-                  <AttributeList>
-                    <Culture>en-US</Culture>
-                    <Text />
-                  </AttributeList>
-                </MultilingualTextItem>
-              </ObjectList>
-            </MultilingualText>
-          </ObjectList>
-        </SW.Blocks.CompileUnit>
-          """
-
-          objectList2 = f"""
-              <SW.Blocks.CompileUnit ID="{counterFunc()}" CompositionName="CompileUnits">
+      <SW.Blocks.CompileUnit ID="{num}" CompositionName="CompileUnits">
         <AttributeList>
           <NetworkSource><FlgNet linkki="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4">
   <Parts>
-    <Access Scope="LiteralConstant" UId="21">
-      <Constant>
-        <ConstantType>UInt</ConstantType>
-        <ConstantValue>2000</ConstantValue>
-      </Constant>
-    </Access>
-    <Access Scope="GlobalVariable" UId="22">
+    <Access Scope="GlobalVariable" UId="21">
       <Symbol>
         <Component Name="DrivesData" />
         <Component Name="{db_array[i]}" />
-        <Component Name="control" />
-        <Component Name="hwidStw" />
       </Symbol>
     </Access>
-    <Access Scope="GlobalVariable" UId="23">
-      <Symbol>
-        <Component Name="DrivesData" />
-        <Component Name="{db_array[i]}" />
-        <Component Name="control" />
-        <Component Name="refSpeed" />
-      </Symbol>
-    </Access>
-    <Part Name="SinaParaS" Version="1.1" UId="24">
-      <Instance Scope="GlobalVariable" UId="25">
-        <Component Name="SinaParaS_DB_{index}" />
-      </Instance>
-    </Part>
+    <Call UId="22">
+      <CallInfo Name="SinaSpeedTest" BlockType="FB">
+        <Instance Scope="GlobalVariable" UId="23">
+          <Component Name="Inst{db_array[i]}{index}" />
+        </Instance>
+        <Parameter Name="data" Section="InOut" Type="&quot;typeSinaSpeedInterface&quot;" />
+      </CallInfo>
+    </Call>
   </Parts>
   <Wires>
-    <Wire UId="41">
+    <Wire UId="24">
       <Powerrail />
-      <NameCon UId="24" Name="en" />
+      <NameCon UId="22" Name="en" />
     </Wire>
-    <Wire UId="42">
-      <OpenCon UId="26" />
-      <NameCon UId="24" Name="Start" />
-    </Wire>
-    <Wire UId="43">
-      <OpenCon UId="27" />
-      <NameCon UId="24" Name="ReadWrite" />
-    </Wire>
-    <Wire UId="44">
+    <Wire UId="25">
       <IdentCon UId="21" />
-      <NameCon UId="24" Name="Parameter" />
-    </Wire>
-    <Wire UId="45">
-      <OpenCon UId="28" />
-      <NameCon UId="24" Name="Index" />
-    </Wire>
-    <Wire UId="46">
-      <OpenCon UId="29" />
-      <NameCon UId="24" Name="ValueWrite1" />
-    </Wire>
-    <Wire UId="47">
-      <OpenCon UId="30" />
-      <NameCon UId="24" Name="ValueWrite2" />
-    </Wire>
-    <Wire UId="48">
-      <OpenCon UId="31" />
-      <NameCon UId="24" Name="AxisNo" />
-    </Wire>
-    <Wire UId="49">
-      <IdentCon UId="22" />
-      <NameCon UId="24" Name="hardwareId" />
-    </Wire>
-    <Wire UId="50">
-      <NameCon UId="24" Name="Ready" />
-      <OpenCon UId="32" />
-    </Wire>
-    <Wire UId="51">
-      <NameCon UId="24" Name="Busy" />
-      <OpenCon UId="33" />
-    </Wire>
-    <Wire UId="52">
-      <NameCon UId="24" Name="Done" />
-      <OpenCon UId="34" />
-    </Wire>
-    <Wire UId="53">
-      <NameCon UId="24" Name="ValueRead1" />
-      <IdentCon UId="23" />
-    </Wire>
-    <Wire UId="54">
-      <NameCon UId="24" Name="ValueRead2" />
-      <OpenCon UId="35" />
-    </Wire>
-    <Wire UId="55">
-      <NameCon UId="24" Name="Format" />
-      <OpenCon UId="36" />
-    </Wire>
-    <Wire UId="56">
-      <NameCon UId="24" Name="ErrorNo" />
-      <OpenCon UId="37" />
-    </Wire>
-    <Wire UId="57">
-      <NameCon UId="24" Name="Error" />
-      <OpenCon UId="38" />
-    </Wire>
-    <Wire UId="58">
-      <NameCon UId="24" Name="ErrorId" />
-      <OpenCon UId="39" />
-    </Wire>
-    <Wire UId="59">
-      <NameCon UId="24" Name="DiagId" />
-      <OpenCon UId="40" />
+      <NameCon UId="22" Name="data" />
     </Wire>
   </Wires>
 </FlgNet></NetworkSource>
@@ -812,13 +548,9 @@ def getXML():
         </ObjectList>
       </SW.Blocks.CompileUnit>
           """
-     
+
           new_field = ET.fromstring(objectList)
           itemid.insert(1, new_field)
-
-          new_field2 = ET.fromstring(objectList2)
-          itemid.insert(2, new_field2)
-
           index = index - 1
 
 
