@@ -36,7 +36,7 @@ myproject = ''
 
 mypath = ''
 
-counter = 4 # 3
+counter = 2 # 3
 
 def async_func(_type, _name, _path):  
     print("tiaportal")
@@ -561,7 +561,7 @@ def getXML():
 
     def counterFunc():
         global counter
-        counter = counter+1
+        counter = len(_nameArr)+(counter+1)
         return str(counter)
     
   
@@ -570,7 +570,7 @@ def getXML():
         
         
         db_array = _nameArr
-        loop = 4 # 3
+        loop = (2 + len(db_array)) # default 2
         loopMax = len(_nameArr)
         index = int(len(_nameArr)-1)
         for i in range(loopMax):
