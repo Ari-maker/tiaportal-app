@@ -336,21 +336,6 @@ def async_func(_type, _name, _path):
     _consoleArr.append(str(software_base.Name))  
 
 
-    # channel
-    deviceItem2 = myproject.Devices[1].DeviceItems[1]
-    channels = deviceItem2.Channels
-    for channel in channels:
-      # work with the channel
-      channelNumber = channel.Number
-      ctype = channel.Type
-      ioType = channel.IoType
-      print("ARVOT")
-      print(channelNumber)
-      print(ctype)
-      print(ioType)
-                
-
-
     # global library
     availableLibraries = mytia.GlobalLibraries.GetGlobalLibraryInfos()
 
@@ -376,6 +361,94 @@ def async_func(_type, _name, _path):
 
 
 
+
+    # DrivesData
+
+    tree = ET.parse('./xmltemplate/DrivesData.xml')
+    root = tree.getroot()
+
+    for item in root.findall('SW.Blocks.GlobalDB'):
+        attributeList=item.find('AttributeList')
+        Interface=attributeList.find('Interface')
+        Sections=Interface.find('Sections')
+        Section=Sections.find('Section')
+
+     
+        db_array = _name
+        loopMax = len(_name)
+
+        for i in range(loopMax):
+            
+            # plc tags
+            plcTagTableSystemGroup = software_base.TagTableGroup
+            constant1 = plcTagTableSystemGroup.TagTables[0].SystemConstants.Find(db_array[i]+"~PROFINET_interface~ModuleAccessPoint")
+            constant2 = plcTagTableSystemGroup.TagTables[0].SystemConstants.Find(db_array[i]+"~PROFINET_interface~Standard_telegram_1")
+
+
+
+            member = f"""
+      <Member Name="{db_array[i]}" Datatype="&quot;typeSinaSpeedInterface&quot;" Remanence="NonRetain" Accessibility="Public">
+            <AttributeList>
+              <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
+              <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
+              <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
+              <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
+            </AttributeList>
+            <Sections>
+              <Section Name="None">
+                <Member Name="control" Datatype="Struct">
+                  <Member Name="enableAxis" Datatype="Bool" />
+                  <Member Name="ackError" Datatype="Bool" />
+                  <Member Name="speedSp" Datatype="Real" />
+                  <Member Name="refSpeed" Datatype="Real" />
+                  <Member Name="configAxis" Datatype="Word" />
+                  <Member Name="hwidStw" Datatype="HW_SUBMODULE">
+                    <StartValue>{constant1.Value}</StartValue>
+                  </Member>
+                  <Member Name="hwidZsw" Datatype="HW_SUBMODULE">
+                    <StartValue>{constant2.Value}</StartValue>
+                  </Member>
+                </Member>
+                <Member Name="status" Datatype="Struct">
+                  <Member Name="axisEnabled" Datatype="Bool" />
+                  <Member Name="lockout" Datatype="Bool" />
+                  <Member Name="actVelocity" Datatype="Real" />
+                  <Member Name="error" Datatype="Bool" />
+                  <Member Name="status" Datatype="Int" />
+                  <Member Name="diagId" Datatype="Word" />
+                </Member>
+              </Section>
+            </Sections>
+          </Member>
+            """
+            
+            new_field = ET.fromstring(member)
+            Section.insert(1, new_field)
+
+
+    tree.write("C:\\export\\result\DrivesData.xml", encoding='unicode')
+
+    with open("C:\\export\\result\DrivesData.xml") as f:
+      lines = f.readlines()
+
+
+    lines[0] = "<Document>\n"
+
+    index = 0
+    for toisto in lines:
+        if lines[index].find('linkki'):
+          lines[index] = lines[index].replace('linkki', 'xmlns')
+          index = index + 1
+
+
+    with open("C:\\export\\result\DrivesData.xml", "w") as f:
+        f.writelines(lines)
+
+
+
+
+    # EXPORT
+
     plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\XMLtest.xml'), tia.ImportOptions.Override)
     unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\export\\result\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
     plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\DrivesData.xml'), tia.ImportOptions.Override)
@@ -396,7 +469,7 @@ def async_func(_type, _name, _path):
     # sinaSpeedTest
     index = 0
     for i in range(len(_name)):
-      iDBName = f"Inst{_name[i]}{index}"    
+      iDBName = f"Inst{_name[i]}"    
       iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number,instanceOfName)
       index = index + 1
 
@@ -415,6 +488,19 @@ def openproject():
     return render_template("index.html")
 
 
+@app.route("/delete/", methods=["POST"])
+def delete():
+ 
+    name = request.form['name']
+    name = name.capitalize()
+    index = _nameArr.index(name)
+    _nameArr.remove(name)
+    _typeArr.pop(index)
+
+
+    return jsonify({'type':_typeArr, 'name':_nameArr})
+
+
 @app.route("/add/", methods=["POST"])
 def add():
 
@@ -425,11 +511,15 @@ def add():
 
     if _type == '' or _name == '':
         return 400
- 
-    global _typeArr
-    _typeArr.append(_type)
     
+    _name = _name.capitalize()
+
+    global _typeArr
     global _nameArr
+    if _name in _nameArr:
+       return 400
+ 
+    _typeArr.append(_type)
     _nameArr.append(_name)
  
     print(_typeArr)
@@ -505,7 +595,7 @@ def getXML():
     <Call UId="22">
       <CallInfo Name="SinaSpeedTest" BlockType="FB">
         <Instance Scope="GlobalVariable" UId="23">
-          <Component Name="Inst{db_array[i]}{index}" />
+          <Component Name="Inst{db_array[i]}" />
         </Instance>
         <Parameter Name="data" Section="InOut" Type="&quot;typeSinaSpeedInterface&quot;" />
       </CallInfo>
@@ -575,80 +665,7 @@ def getXML():
         f.writelines(lines)
 
 
-    # DrivesData
-
-    tree = ET.parse('./xmltemplate/DrivesData.xml')
-    root = tree.getroot()
-
-    for item in root.findall('SW.Blocks.GlobalDB'):
-        attributeList=item.find('AttributeList')
-        Interface=attributeList.find('Interface')
-        Sections=Interface.find('Sections')
-        Section=Sections.find('Section')
-
-     
-        db_array = _nameArr
-        loopMax = len(_nameArr)
-
-        for i in range(loopMax):
-
-            member = f"""
-      <Member Name="{db_array[i]}" Datatype="&quot;typeSinaSpeedInterface&quot;" Remanence="NonRetain" Accessibility="Public">
-            <AttributeList>
-              <BooleanAttribute Name="ExternalAccessible" SystemDefined="true">true</BooleanAttribute>
-              <BooleanAttribute Name="ExternalVisible" SystemDefined="true">true</BooleanAttribute>
-              <BooleanAttribute Name="ExternalWritable" SystemDefined="true">true</BooleanAttribute>
-              <BooleanAttribute Name="SetPoint" SystemDefined="true">false</BooleanAttribute>
-            </AttributeList>
-            <Sections>
-              <Section Name="None">
-                <Member Name="control" Datatype="Struct">
-                  <Member Name="enableAxis" Datatype="Bool" />
-                  <Member Name="ackError" Datatype="Bool" />
-                  <Member Name="speedSp" Datatype="Real" />
-                  <Member Name="refSpeed" Datatype="Real" />
-                  <Member Name="configAxis" Datatype="Word" />
-                  <Member Name="hwidStw" Datatype="HW_SUBMODULE">
-                    <StartValue>266</StartValue>
-                  </Member>
-                  <Member Name="hwidZsw" Datatype="HW_SUBMODULE">
-                    <StartValue>266</StartValue>
-                  </Member>
-                </Member>
-                <Member Name="status" Datatype="Struct">
-                  <Member Name="axisEnabled" Datatype="Bool" />
-                  <Member Name="lockout" Datatype="Bool" />
-                  <Member Name="actVelocity" Datatype="Real" />
-                  <Member Name="error" Datatype="Bool" />
-                  <Member Name="status" Datatype="Int" />
-                  <Member Name="diagId" Datatype="Word" />
-                </Member>
-              </Section>
-            </Sections>
-          </Member>
-            """
-            
-            new_field = ET.fromstring(member)
-            Section.insert(1, new_field)
-
-
-    tree.write("C:\\export\\result\DrivesData.xml", encoding='unicode')
-
-    with open("C:\\export\\result\DrivesData.xml") as f:
-      lines = f.readlines()
-
-
-    lines[0] = "<Document>\n"
-
-    index = 0
-    for toisto in lines:
-        if lines[index].find('linkki'):
-          lines[index] = lines[index].replace('linkki', 'xmlns')
-          index = index + 1
-
-
-    with open("C:\\export\\result\DrivesData.xml", "w") as f:
-        f.writelines(lines)
+   
 
   
     return render_template("index.html")
