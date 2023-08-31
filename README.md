@@ -1,6 +1,6 @@
 # tiaportal-app
 
-![Screenshot](app.png)
+![Screenshot](app/static/images/app.png)
 
 1. Liitä Siemens.Engineering.dll kansioon C:\Program Files\Siemens\Automation\Portal V18\PublicAPI\V18
 
