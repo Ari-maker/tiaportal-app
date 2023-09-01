@@ -21,8 +21,29 @@ $(document).ready(function() {
       }
       });
    });
-   
 
+   let path = JSON.parse(localStorage.getItem('path'));
+
+   if(path != null) {
+      $('#project').val(path.project);
+      $('#dll').val(path.dll);
+      $('#lib').val(path.lib);
+
+
+      $.ajax({
+         type: 'POST',
+         url: '/load/',
+         data: {"project":path.project,"dll":path.dll,"lib":path.lib},
+         success: function(response) {
+
+         }
+
+      });
+
+
+   }
+
+   
 });
 
 function add() {   
@@ -67,7 +88,27 @@ $.ajax({
          type: 'GET',
          url: '/openproject/',
          success: function(response) {
-            
+            $('#project').val(response.project);
+         }
+      });
+    }  
+
+    function selectDLL() {   
+      $.ajax({
+         type: 'GET',
+         url: '/selectdll/',
+         success: function(response) {
+            $('#dll').val(response.dll);
+         }
+      });
+    }  
+
+    function selectLib() {   
+      $.ajax({
+         type: 'GET',
+         url: '/selectlib/',
+         success: function(response) {
+            $('#lib').val(response.lib);
          }
       });
     }  
@@ -91,6 +132,25 @@ $.ajax({
         wrapper[0].innerHTML = myHTML
       
     });
+
+
+
+    function save(){
+
+      let project = $('#project').val();
+      let dll = $('#dll').val();
+      let lib = $('#lib').val();
+
+     
+      let obj = {
+         project: project,
+         dll: dll,
+         lib: lib
+     };
+
+     localStorage.setItem('path', JSON.stringify(obj));
+
+    }
 
     function select(name){
       console.log(name);

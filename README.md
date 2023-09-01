@@ -2,11 +2,9 @@
 
 ![Screenshot](app/static/images/app.png)
 
-1. Liitä Siemens.Engineering.dll kansioon C:\Program Files\Siemens\Automation\Portal V18\PublicAPI\V18
+1. Mene kansioon Flask\app\xml ja kopio tiedostot kansioon C:\export\result
 
-2. Mene kansioon Flask\app\xml ja kopio tiedostot kansioon C:\export\result
-
-3. Asenna python https://www.python.org/downloads/
+2. Asenna python https://www.python.org/downloads/
 
 3. Klikkaa install.sh
 

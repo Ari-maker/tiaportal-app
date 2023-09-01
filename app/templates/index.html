@@ -43,6 +43,48 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="card-body">
+                      <div class="p pb-3">
+                        <strong>Paths</strong>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="project" id="project" />
+                            <input class="btn btn-primary" type="button" onclick="openproject()" value="Select Project">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="dll" id="dll" />
+                            <input class="btn btn-primary" type="button" onclick="selectDLL()" value="Select DLL">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="lib" id="lib" />
+                            <input class="btn btn-primary" type="button" onclick="selectLib()" value="Select Library">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col">
+                          <input class="btn btn-primary" type="button" onclick="save()" value="Save">
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card-body">
                     <form id="tiaportal">
                       <div class="p pb-3">
                         <strong>Device</strong>
@@ -66,9 +108,8 @@
                       <div class="row">
                         <div class="col">
                           <button class="btn btn-primary" type="submit">
-                            Start
+                            Start Tia Portal
                           </button>
-                          <input class="btn btn-primary" type="button" onclick="openproject()" value="Open project">
                           <input class="btn btn-primary" type="button" onclick="add()" value="Add new device">
                         </div>
                       </div>
@@ -79,7 +120,7 @@
                   <h4 class="laskuri">Added devices (0)</h4>
                   <div class="panel-group">
                     <div class="panel panel-primary">
-                      <div class="panel-body">Empty list!</div>
+                      <div class="panel-body">Empty list.</div>
                     </div>
                   </div>
                 </div>
