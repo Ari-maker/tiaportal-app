@@ -26,7 +26,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
     mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
     processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
     print (processes)
-    _consoleArr.append(str(processes))
+    _consoleArr.append("process: "+str(processes))
     # Creating a new project. Using try/except in case project allready exists
  
     #project_path = DirectoryInfo ('C:\\Openness\\PKI')
@@ -34,7 +34,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
  
     try:
        print(_path)
-       _consoleArr.append(_path)
+       _consoleArr.append("project path: "+_path)
        #myproject = mytia.Projects.Create(project_path, project_name)
        project_path = FileInfo (_path)
        #global myproject
@@ -330,12 +330,14 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
                   #libraryOpenedWithInfo = mytia.GlobalLibraries.Open(libInfo)
                   #masterCopy = libraryOpenedWithInfo.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
                   #libBlock = software_base.BlockGroup.Blocks.CreateFrom(masterCopy)
-     
+    
+ 
 
     userLib = mytia.GlobalLibraries.Open(FileInfo(libPath), tia.OpenMode.ReadWrite)
     masterCopy = userLib.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
     libBlock = software_base.BlockGroup.Blocks.CreateFrom(masterCopy)
 
+    _consoleArr.append("SinaSpeedTest")
 
     #plc_block = software_base.BlockGroup.Blocks.Find("Drives")
     #plc_block.Export(FileInfo('C:\\export\\tulos\\Drives.xml'), tia.ExportOptions.WithDefaults)
@@ -428,6 +430,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
         f.writelines(lines)
 
 
+    _consoleArr.append("DrivesData")
 
 
     # EXPORT
@@ -437,7 +440,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
     plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
   
     
-
+    _consoleArr.append("export xml")
 
 
     #unit = software_base.TypeGroup.Types.Find("typeSinaSpeedInterface")
@@ -455,6 +458,9 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
       iDBName = f"Inst{_name[i]}"    
       iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number, instanceOfName)
       index = index + 1
+
+
+    _consoleArr.append("CreateInstanceDB")
 
 
     print('Demo complete!')
