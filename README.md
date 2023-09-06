@@ -2,11 +2,9 @@
 
 ![Screenshot](app/static/images/app.png)
 
-1. Mene kansioon Flask\app\xml ja kopio tiedostot kansioon C:\export\result
+1. Asenna python https://www.python.org/downloads/
 
-2. Asenna python https://www.python.org/downloads/
+2. Klikkaa install.sh
 
-3. Klikkaa install.sh
-
-4. Käynnistä sovellus klikkaamalla app.pyw
+3. Käynnistä sovellus klikkaamalla app.pyw
 

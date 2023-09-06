@@ -1,6 +1,7 @@
 import time
 import threading
 import ipaddress
+import os 
 
 import xml.etree.ElementTree as ET
 ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
@@ -408,9 +409,9 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
             Section.insert(1, new_field)
 
 
-    tree.write("C:\\export\\result\DrivesData.xml", encoding='unicode')
+    tree.write("C:\\openness-app\\DrivesData.xml", encoding='unicode')
 
-    with open("C:\\export\\result\DrivesData.xml") as f:
+    with open("C:\\openness-app\\DrivesData.xml") as f:
       lines = f.readlines()
 
 
@@ -423,7 +424,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
           index = index + 1
 
 
-    with open("C:\\export\\result\DrivesData.xml", "w") as f:
+    with open("C:\\openness-app\\DrivesData.xml", "w") as f:
         f.writelines(lines)
 
 
@@ -431,9 +432,9 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
 
     # EXPORT
 
-    plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\XMLtest.xml'), tia.ImportOptions.Override)
-    unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\export\\result\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
-    plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\export\\result\\DrivesData.xml'), tia.ImportOptions.Override)
+    plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
+    unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\\openness-app\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
+    plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
   
     
 
@@ -464,7 +465,19 @@ def writeXML(_nameArr, counter):
 
     print('XML')
 
-    tree = ET.parse('./xmltemplate/test.xml')
+        
+    # path 
+    path = 'C:\\openness-app'
+        
+    # Create the directory 
+    # 'GeeksForGeeks' in 
+    # '/home / User / Documents' 
+    try: 
+        os.mkdir(path) 
+    except OSError as error: 
+        print(error)  
+
+    tree = ET.parse('./xmltemplate/Drives.xml')
     root = tree.getroot()
 
     def counterFunc():
@@ -552,11 +565,11 @@ def writeXML(_nameArr, counter):
           index = index - 1
 
 
-    tree.write("C:\\export\\result\XMLtest.xml", encoding='unicode')
+    tree.write("C:\\openness-app\\Drives.xml", encoding='unicode')
     #tree.write("XMLtest.xml", encoding='unicode')
 
 
-    with open("C:\\export\\result\XMLtest.xml") as f:
+    with open("C:\\openness-app\\Drives.xml") as f:
       lines = f.readlines()
 
 
@@ -569,8 +582,31 @@ def writeXML(_nameArr, counter):
           index = index + 1
 
 
-    with open("C:\\export\\result\XMLtest.xml", "w") as f:
+    with open("C:\\openness-app\\Drives.xml", "w") as f:
         f.writelines(lines)
+
+
+
+    # sinaSpeedInterface
+    tree = ET.parse('./xmltemplate/typeSinaSpeedInterface.xml')
+    tree.write("C:\\openness-app\\typeSinaSpeedInterface.xml", encoding='unicode')
+
+    with open("C:\\openness-app\\typeSinaSpeedInterface.xml") as f:
+      lines = f.readlines()
+
+
+    lines[0] = "<Document>\n"
+
+    index = 0
+    for toisto in lines:
+        if lines[index].find('linkki'):
+          lines[index] = lines[index].replace('linkki', 'xmlns')
+          index = index + 1
+
+
+    with open("C:\\openness-app\\typeSinaSpeedInterface.xml", "w") as f:
+        f.writelines(lines)
+
 
 
 def startProcess(_type, _name, _path, _console, dllPath, libPath):

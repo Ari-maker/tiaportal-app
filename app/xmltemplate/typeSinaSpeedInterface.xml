@@ -45,7 +45,7 @@
   </DocumentInfo>
   <SW.Types.PlcStruct ID="0">
     <AttributeList>
-      <Interface><Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+      <Interface><Sections linkki="http://www.siemens.com/automation/Openness/SW/Interface/v5">
   <Section Name="None">
     <Member Name="control" Datatype="Struct">
       <AttributeList>
