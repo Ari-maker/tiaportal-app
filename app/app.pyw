@@ -29,6 +29,8 @@ dllpath = ''
 
 libpath = ''
 
+interface = True
+
   
 @app.route("/openproject/", methods=["GET"])
 def openproject():
@@ -130,6 +132,8 @@ def index():
     _typeArr = []
     global _nameArr
     _nameArr = []
+    global interface
+    interface = True
    
 
     return render_template("index.html")
@@ -155,6 +159,7 @@ def tiaportal():
     global _consoleArr
     global dllpath
     global libpath
+    global interface
     _consoleArr = []
 
     print(_typeArr)
@@ -179,7 +184,7 @@ def tiaportal():
     getXML()
 
     from openness import startProcess
-    startProcess(_typeArr, _nameArr, mypath, _consoleArr, dllpath, libpath)
+    startProcess(_typeArr, _nameArr, mypath, _consoleArr, dllpath, libpath, interface)
     
      
     #return redirect('/')
@@ -188,6 +193,18 @@ def tiaportal():
 @app.route("/console/")
 def console():
      return render_template("console.html")
+
+@app.route("/interface/")
+def interfaceUser():
+
+    global interface
+
+    if interface is True:
+        interface = False
+    else:
+        interface = True
+
+    return render_template("index.html")
 
 @app.route("/getConsoleData/")
 def consoleData():

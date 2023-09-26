@@ -152,6 +152,16 @@ $.ajax({
 
     }
 
+    function change(){
+
+      $.ajax({
+         type: 'GET',
+         url: '/interface/',
+         success: function(response) {
+         }
+      });
+    }
+
     function select(name){
       console.log(name);
 
@@ -189,3 +199,6 @@ $.ajax({
 
 
     }
+
+
+

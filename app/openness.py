@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
 
 
-def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):  
+def async_func(_type, _name, _path, _consoleArr, dllPath, libPath, interface):  
     
     import clr
     #clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\V18\\Siemens.Engineering.dll')
@@ -23,7 +23,14 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
     
     print("tiaportal")
     _consoleArr.append("tiaportal")
-    mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
+
+    mytia = ''
+
+    if interface is True:
+      mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
+    else:
+      mytia = tia.TiaPortal(tia.TiaPortalMode.WithoutUserInterface)
+
     processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
     print (processes)
     _consoleArr.append("process: "+str(processes))
@@ -617,9 +624,9 @@ def writeXML(_nameArr, counter):
 
 
 
-def startProcess(_type, _name, _path, _console, dllPath, libPath):
+def startProcess(_type, _name, _path, _console, dllPath, libPath, interface):
    
 
 
-   x = threading.Thread(target=async_func, args=(_type,_name,_path,_console,dllPath,libPath,))
+   x = threading.Thread(target=async_func, args=(_type,_name,_path,_console,dllPath,libPath,interface,))
    x.start()
