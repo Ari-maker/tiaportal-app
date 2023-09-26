@@ -180,7 +180,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
                 ioSystem = subnet.IoSystems[0]
                 n_interfaces[n_interfaces.index(n)].Nodes[0].ConnectToSubnet(subnet)
                 if (n_interfaces[n_interfaces.index(n)].IoConnectors.Count) >> 0:
-                    n_interfaces[n_interfaces.index(n)].IoConnectors[0].ConnectToIoSystem(ioSystem);
+                    n_interfaces[n_interfaces.index(n)].IoConnectors[0].ConnectToIoSystem(ioSystem)
             
             except Exception:
                 pass    
@@ -334,8 +334,10 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath):
  
 
     userLib = mytia.GlobalLibraries.Open(FileInfo(libPath), tia.OpenMode.ReadWrite)
-    masterCopy = userLib.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
-    libBlock = software_base.BlockGroup.Blocks.CreateFrom(masterCopy)
+    typesLib = userLib.TypeFolder.Types.Find("SinaSpeedTest")   
+    typeVersion = typesLib.Versions[0]
+    #masterCopy = userLib.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
+    libBlock = software_base.BlockGroup.Blocks.CreateFrom(typeVersion)
 
     _consoleArr.append("SinaSpeedTest")
 
