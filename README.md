@@ -1,6 +1,6 @@
 # tiaportal-app
 
-![Screenshot](app/static/images/app.png)
+![Screenshot](app/static/images/app2.png)
 
 1. Asenna python https://www.python.org/downloads/
 
