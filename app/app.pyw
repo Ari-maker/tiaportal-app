@@ -3,6 +3,7 @@ from flaskwebgui import FlaskUI # import FlaskUI
 from email.mime.text import MIMEText
 import smtplib
 from email.message import EmailMessage
+import openpyxl
 app = Flask(__name__)
 
   
@@ -103,6 +104,8 @@ def add():
     if _type == '' or _name == '':
         return 400
     
+
+    _name = _name.replace(" ", "")
     _name = _name.capitalize()
 
     global _typeArr
@@ -193,6 +196,39 @@ def tiaportal():
 @app.route("/console/")
 def console():
      return render_template("console.html")
+
+
+@app.route("/importExcel/")
+def importExcel():
+
+    excelPath = askopenfilename(filetypes=(("Excel file", "*.xlsx"),("All files", "*.*") ))
+
+    if excelPath is None or excelPath == "":
+        return render_template("index.html")
+
+    # Define variable to load the dataframe
+    dataframe = openpyxl.load_workbook(excelPath)
+    
+    # Define variable to read sheet
+    dataframe1 = dataframe.active
+    
+    # Iterate the loop to read the cell values
+    for row in range(0, dataframe1.max_row):
+        index = 0
+        for col in dataframe1.iter_cols(1, dataframe1.max_column):
+        
+            if row > 0 and (index == 1):
+               print(col[row].value) 
+               _nameArr.append(col[row].value)
+
+            if row > 0 and (index == 2):
+              print(col[row].value)  
+              _typeArr.append(col[row].value)
+
+            index = index + 1
+
+    return jsonify({'type':_typeArr, 'name':_nameArr})
+
 
 @app.route("/interface/")
 def interfaceUser():
