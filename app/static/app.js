@@ -1,5 +1,12 @@
+let isFile = true;
+
 $(document).ready(function() {
 
+   document.getElementById('paths').style.display = "none";
+   document.getElementById('lists').style.display = "none";
+   document.getElementById('labels').style.display = "none";
+   document.getElementById('device-button').style.display = "none";
+   
    $('#tiaportal').submit(function(event) {
       event.preventDefault();
       $.ajax({
@@ -45,6 +52,31 @@ $(document).ready(function() {
 
    
 });
+
+
+function file() {   
+
+   if(!isFile)
+   {
+      document.getElementById('paths').style.display = "none";
+      document.getElementById('lists').style.display = "none";
+      document.getElementById('labels').style.display = "none";
+      document.getElementById('device-button').style.display = "none";
+      document.getElementById('import-button').style.display = "inline-block";
+   }
+   else
+   {
+      document.getElementById('paths').style.display = "block";
+      document.getElementById('lists').style.display = "block";
+      document.getElementById('labels').style.display = "block";
+      document.getElementById('device-button').style.display = "inline-block";
+      document.getElementById('import-button').style.display = "none";
+   }
+
+
+   isFile = !isFile;
+
+}
 
 function add() {   
 $.ajax({

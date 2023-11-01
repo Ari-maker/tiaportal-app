@@ -212,22 +212,53 @@ def importExcel():
     # Define variable to read sheet
     dataframe1 = dataframe.active
     
+    foundPaths = True
+    foundDevices = False
+    pathsRow = -1
+
     # Iterate the loop to read the cell values
     for row in range(0, dataframe1.max_row):
         index = 0
+
         for col in dataframe1.iter_cols(1, dataframe1.max_column):
         
-            if row > 0 and (index == 1):
-               print(col[row].value) 
-               _nameArr.append(col[row].value)
 
-            if row > 0 and (index == 2):
-              print(col[row].value)  
-              _typeArr.append(col[row].value)
+            # paths
+            if col[row].value != None and foundPaths == True:
+
+                pathsRow = row+1
+
+                if(index == 0):
+                    global mypath
+                    mypath = col[pathsRow].value
+                if(index == 1):
+                    global dllpath
+                    dllpath = col[pathsRow].value
+                if(index == 2):
+                    global libpath
+                    libpath = col[pathsRow].value
+                    foundPaths = False
+                    foundDevices = True
+
+       # devices
+            elif col[row].value != None and foundDevices == True and row > (pathsRow+1):
+              
+                if(index == 0):
+                    _nameArr.append(col[row].value)
+                if(index == 1):
+                    _typeArr.append(col[row].value)
+              
 
             index = index + 1
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
+
+
+@app.route("/shutdown/")
+def shutdown():
+      
+      print("shutdown")
+      return RuntimeError("Server going down")
 
 
 @app.route("/interface/")
@@ -255,5 +286,5 @@ def consoleData():
 if __name__ == "__main__":
     #app.run(debug=True)
     #ui.run()
-     FlaskUI(app=app, port=3000, width=1280 , height=800, server="flask").run()
+    FlaskUI(app=app, width=1280 , height=800, server="flask").run()
      #ui = FlaskUI(app, width=500, height=500) # add app and parameters
