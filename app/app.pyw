@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 import smtplib
 from email.message import EmailMessage
 import openpyxl
+import json
 app = Flask(__name__)
 
   
@@ -76,21 +77,24 @@ def delete():
     return jsonify({'type':_typeArr, 'name':_nameArr})
 
 
-@app.route("/load/", methods=["POST"])
+@app.route("/load/")
 def load():
- 
-    project = request.form['project']
-    dll = request.form['dll']
-    lib = request.form['lib']
+
 
     global mypath 
-    mypath = project
     global dllpath
-    dllpath = dll
     global libpath
-    libpath = lib
+
+    # Opening JSON file
+    with open('paths.json', 'r') as openfile:
+       # Reading from json file
+        json_object = json.load(openfile)
+        mypath = json_object['project']
+        dllpath = json_object['dll']
+        libpath = json_object['lib']
+
    
-    return render_template("index.html")
+    return jsonify({'project':mypath, 'dll':dllpath,'lib':libpath})
 
 
 @app.route("/add/", methods=["POST"])
@@ -272,6 +276,31 @@ def interfaceUser():
         interface = True
 
     return render_template("index.html")
+
+
+
+
+@app.route("/saveFile/", methods=["POST"])
+def saveFile():
+    _project = request.form['project']
+    _dll = request.form['dll']
+    _lib = request.form['lib']
+
+    filedata = {
+    "project": _project,
+    "dll": _dll,
+    "lib": _lib
+    }
+
+    # Serializing json
+    json_object = json.dumps(filedata, indent=3)
+
+    # Writing to sample.json
+    with open("paths.json", "w") as outfile:
+        outfile.write(json_object)
+
+    return jsonify({'file':str(filedata)})  
+
 
 @app.route("/getConsoleData/")
 def consoleData():

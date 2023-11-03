@@ -29,26 +29,20 @@ $(document).ready(function() {
       });
    });
 
-   let path = JSON.parse(localStorage.getItem('path'));
 
-   if(path != null) {
-      $('#project').val(path.project);
-      $('#dll').val(path.dll);
-      $('#lib').val(path.lib);
+   $.ajax({
+      type: 'GET',
+       url: '/load/',
+      success: function(response) {
+         $('#project').val(response.project);
+         $('#dll').val(response.dll);
+         $('#lib').val(response.lib);
+       }
 
-
-      $.ajax({
-         type: 'POST',
-         url: '/load/',
-         data: {"project":path.project,"dll":path.dll,"lib":path.lib},
-         success: function(response) {
-
-         }
-
-      });
+   });
 
 
-   }
+   
 
    
 });
@@ -212,7 +206,16 @@ $.ajax({
          lib: lib
      };
 
-     localStorage.setItem('path', JSON.stringify(obj));
+
+     $.ajax({
+     type: 'POST',
+     url: '/saveFile/',
+     data: obj,
+     success: function(response) {
+         console.log(response.data);
+      }
+
+   });
 
     }
 
