@@ -201,6 +201,9 @@ def tiaportal():
 def console():
      return render_template("console.html")
 
+@app.route("/device/")
+def device():
+     return render_template("device.html")
 
 @app.route("/importExcel/")
 def importExcel():
@@ -258,13 +261,6 @@ def importExcel():
     return jsonify({'type':_typeArr, 'name':_nameArr})
 
 
-@app.route("/shutdown/")
-def shutdown():
-      
-      print("shutdown")
-      return RuntimeError("Server going down")
-
-
 @app.route("/interface/")
 def interfaceUser():
 
@@ -275,9 +271,7 @@ def interfaceUser():
     else:
         interface = True
 
-    return render_template("index.html")
-
-
+    return jsonify({'interface':str(interface)})
 
 
 @app.route("/saveFile/", methods=["POST"])

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../static/app.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="../static/app.js"></script>
+  <script src="../static/device.js"></script>
 </head>
 <body>
   <!-- Navbar Section -->
@@ -22,14 +22,14 @@
     <div class="collapse navbar-collapse" id="collapse_Navbar">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link text-white" href="/">FILE IMPORT</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="/device/">PROJECT VIEW</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="/console/">OUTPUT LOG</a>
-        </li>
+            <a class="nav-link text-white" href="/">FILE IMPORT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/device/">PROJECT VIEW</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/console/">OUTPUT LOG</a>
+          </li>
       </ul>
     </div>
   </nav>
@@ -45,14 +45,71 @@
             <div class="card mb-0" data-aos="zoom-in">
               <div class="row">
                 <div class="col-md-6">
+                  <div class="card-body" id="paths">
+                      <div class="p pb-3">
+                        <strong>Project View</strong>
+                      </div>
+                      <br>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="project" id="project" />
+                            <input class="btn btn-primary" type="button" onclick="openproject()" value="Select Project">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="dll" id="dll" />
+                            <input class="btn btn-primary" type="button" onclick="selectDLL()" value="Select DLL">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="lib" id="lib" />
+                            <input class="btn btn-primary" type="button" onclick="selectLib()" value="Select Library">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col">
+                          <input class="btn btn-primary" type="button" onclick="save()" value="Save Changes">
+                        </div>
+                      </div>
+                  </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <div class="card-body">
                     <form id="tiaportal">
+                      <div id="labels">
                       <div class="p pb-3">
-                        <strong>File Import</strong>
+                        <strong>Device</strong>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="name" id="name" placeholder="Name" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                            <input class="form-control" type="text" name="type" id="type" placeholder="OrderNumber" />
+                          </div>
+                        </div>
+                      </div>
                       </div>
                       <div class="row">
                         <div class="col">
@@ -65,7 +122,7 @@
                           <button class="btn btn-primary" type="submit">
                             Start TIA Portal
                           </button>
-                          <input class="btn btn-primary" id="import-button" type="button" onclick="importExcel()" value="Choose File">
+                          <input id="device-button" class="btn btn-primary" type="button" onclick="add()" value="Add Device">
                         </div>
                       </div>
                     </form>
@@ -91,6 +148,11 @@
   </div>
   </div>
   </div>
+  </div>
+  <div class="container" id="lists">
+    <h3>List of devices</h3>
+    <div class="list-group">
+    </div>
   </div>
   <div class="container">
     <!-- Modal -->
