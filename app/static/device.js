@@ -3,16 +3,17 @@ $(document).ready(function() {
 
     $('#tiaportal').submit(function(event) {
        event.preventDefault();
+       $("#myModal2").modal();
        $.ajax({
           type: 'POST',
           url: '/tiaportal/',
           data: $('#tiaportal').serialize(),
-          success: function() {
+          success: function(response) {
              $('#type').val('');
              $('#name').val('');
       
              //alert('Starting TIA Portal!');
-             $("#myModal").modal();
+          
             
           }
           ,
@@ -23,7 +24,48 @@ $(document).ready(function() {
        });
     });
  
- 
+    $('#initPortal').submit(function(event) {
+      event.preventDefault();
+      $("#myModal").modal();
+      $.ajax({
+         type: 'POST',
+         url: '/initPortal/',
+         data: $('#initPortal').serialize(),
+         success: function(response) {
+            $('#type').val('');
+            $('#name').val('');
+     
+            //alert('Starting TIA Portal!');
+            if (response.tia == 1)
+            {
+              document.getElementById('device-button').removeAttribute("disabled");
+              document.getElementById('compile-button').removeAttribute("disabled");
+
+              const wrapper = document.getElementsByClassName("list-group");
+
+              let myHTML = '';
+
+              let arr = response.dlist;
+            
+              for (let i = 0; i < arr.length; i++) {
+               
+                myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
+          
+              }
+            
+              wrapper[0].innerHTML = myHTML
+
+            }
+           
+         }
+         ,
+        error: function (xhr, ajaxOptions, thrownError) {
+            document.getElementById('error').innerHTML = "There must be at least one device. Project path missing?";
+            document.getElementById('error-message').style.display = "block";
+      }
+      });
+   });
+   
     $.ajax({
        type: 'GET',
         url: '/load/',
@@ -34,9 +76,37 @@ $(document).ready(function() {
         }
  
     });
+
+    $.ajax({
+      type: 'GET',
+       url: '/tia/',
+      success: function(response) {
+         if (response.tia == 1)
+         {
+           document.getElementById('device-button').removeAttribute("disabled");
+           document.getElementById('compile-button').removeAttribute("disabled");
+
+           const wrapper = document.getElementsByClassName("list-group");
+
+           let myHTML = '';
+
+           let arr = response.dlist;
+         
+           for (let i = 0; i < arr.length; i++) {
+            
+             myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
+       
+           }
+         
+           wrapper[0].innerHTML = myHTML
+         }
+       }
+
+   });
  
  });
 
+ /*
  $.getJSON('../static/data.json', function(data) {
     console.log(JSON.stringify(data.devices));
 
@@ -55,6 +125,7 @@ $(document).ready(function() {
     wrapper[0].innerHTML = myHTML
   
 });
+*/
 
 function add() {   
     $.ajax({
@@ -153,6 +224,9 @@ function save(){
 });
 
 }
+
+
+
 
 function change(){
 

@@ -33,6 +33,9 @@ libpath = ''
 
 interface = True
 
+tia = []
+project = []
+dlist = []
   
 @app.route("/openproject/", methods=["GET"])
 def openproject():
@@ -157,9 +160,15 @@ def getXML():
 
     return render_template("index.html")
 
+@app.route("/tia/")
+def tiafunc():
+    if len(tia) != 0:
+        return jsonify({'tia':1,'dlist:':dlist})
+
+    return jsonify({'tia':0})
+
 @app.route("/tiaportal/", methods=["POST"])
-def tiaportal():
-    
+def initTia():
     global _typeArr
     global _nameArr
     global mypath
@@ -167,14 +176,11 @@ def tiaportal():
     global dllpath
     global libpath
     global interface
-    _consoleArr = []
-
+   
     print(_typeArr)
     print(_nameArr)
     print(mypath)
     
-    if not mypath:
-        return 400
 
     if not _typeArr: 
         return 400
@@ -188,14 +194,64 @@ def tiaportal():
     if not libpath:
        return 400
     
+    if not tia:
+        return 400
+    
+    if not project:
+        return 400
+    
     getXML()
 
     from openness import startProcess
-    startProcess(_typeArr, _nameArr, mypath, _consoleArr, dllpath, libpath, interface)
+    startProcess(_typeArr, _nameArr, _consoleArr, dllpath, libpath, tia[0], project[0])
+
+    #return redirect('/')
+    return render_template("device.html")
+
+
+@app.route("/initPortal/", methods=["POST"])
+def tiaportal():
     
+    global _typeArr
+    global _nameArr
+    global mypath
+    global _consoleArr
+    global dllpath
+    global libpath
+    global interface
+
+    _consoleArr = []
+
+    print(_typeArr)
+    print(_nameArr)
+    print(mypath)
+    
+    if not mypath:
+        return 400
+   
+    if not dllpath:
+        return 400
+    
+    if not libpath:
+       return 400
+    
+ 
+    
+    getXML()
+
+    #from openness import startProcess
+    #startProcess(_typeArr, _nameArr, mypath, _consoleArr, dllpath, libpath, tia)
+
+
+    from openness import initProcess
+    initProcess(_consoleArr, mypath,dllpath,interface, tia, project, dlist)
      
     #return redirect('/')
-    return render_template("index.html")
+
+    if len(tia) != 0:
+        return jsonify({'tia':1, 'dlist':dlist})
+
+    return jsonify({'tia':0})
 
 @app.route("/console/")
 def console():
@@ -203,7 +259,7 @@ def console():
 
 @app.route("/device/")
 def device():
-     return render_template("device.html")
+    return render_template("device.html")
 
 @app.route("/importExcel/")
 def importExcel():

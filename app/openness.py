@@ -7,9 +7,9 @@ import xml.etree.ElementTree as ET
 ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
 
 
-def async_func(_type, _name, _path, _consoleArr, dllPath, libPath, interface):  
 
-  try:
+def init_func(_console, _path, dllPath, interface, tiaportal, project, dlist):
+    try:
 
       import clr
       #clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\V18\\Siemens.Engineering.dll')
@@ -24,9 +24,7 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath, interface):
 
       
       print("tiaportal")
-      _consoleArr.append("tiaportal")
-
-      mytia = ''
+      _console.append("tiaportal")
 
       if interface is True:
         mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
@@ -35,25 +33,68 @@ def async_func(_type, _name, _path, _consoleArr, dllPath, libPath, interface):
 
       processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
       print (processes)
-      _consoleArr.append("process: "+str(processes))
-      # Creating a new project. Using try/except in case project allready exists
-  
-      #project_path = DirectoryInfo ('C:\\Openness\\PKI')
-      
-  
+      _console.append("process: "+str(processes))
+
+      tiaportal.append(mytia)
+
       try:
+
+        # list 
+        for deviceList in mytia.HardwareCatalog.Find("G120C PN"):
+           d = deviceList.TypeIdentifier
+           d = d.replace("OrderNumber:", "")
+           print(d)
+           dlist.append(d)
+
         print(_path)
-        _consoleArr.append("project path: "+_path)
+        _console.append("project path: "+_path)
         #myproject = mytia.Projects.Create(project_path, project_name)
         project_path = FileInfo (_path)
         #global myproject
         myproject = mytia.Projects.OpenWithUpgrade(project_path)
         #print(myproject)
+
+        project.append(myproject)
+
+      
+           
+
       except Exception as e:
         print (e)
-        _consoleArr.append(e)
+        _console.append(e)
         pass
 
+
+
+
+    except Exception as e:
+        _console.append('An unexpected error has occurred. Please try again!!')
+        _console.append('An exception occurred: {}'.format(e))
+
+
+
+def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject):  
+
+  try:
+
+      import clr
+      #clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\V18\\Siemens.Engineering.dll')
+      clr.AddReference(dllPath)
+      from System.IO import DirectoryInfo, FileInfo
+      import Siemens.Engineering as tia
+      import Siemens.Engineering.HW.Features as hwf
+      import Siemens.Engineering.SW.Units as units
+      import Siemens.Engineering.Compiler as comp
+      import Siemens.Engineering.Library as lib
+      import os
+
+
+      # Creating a new project. Using try/except in case project allready exists
+  
+      #project_path = DirectoryInfo ('C:\\Openness\\PKI')
+      
+  
+   
       #Adding the main components
 
       #print ('Creating PLC1')
@@ -631,15 +672,24 @@ def writeXML(_nameArr, counter):
         f.writelines(lines)
 
 
+def initProcess(_console, path, dllPath, interface, tia, project, dlist):
+  try:
 
-def startProcess(_type, _name, _path, _console, dllPath, libPath, interface):
+    x = threading.Thread(target=init_func, args=(_console,path,dllPath,interface,tia,project,dlist))
+    x.start()
+    x.join()
+    
+  except Exception as e:
+    _console.append('An unexpected error has occurred. Please try again!!')
+    _console.append('An exception occurred: {}'.format(e))
+
+def startProcess(_type, _name, _console, dllPath, libPath, tia, project):
    
 
   try:
 
-    x = threading.Thread(target=async_func, args=(_type,_name,_path,_console,dllPath,libPath,interface,))
+    x = threading.Thread(target=async_func, args=(_type,_name,_console,dllPath,libPath,tia,project,))
     x.start()
-    
 
   except Exception as e:
     _console.append('An unexpected error has occurred. Please try again!!')
