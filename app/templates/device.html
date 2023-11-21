@@ -3,16 +3,24 @@
 <title>TIA OPENNESS</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <head>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="../static/app.css">
+  <link rel="stylesheet" href="../static/tree.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="../static/device.js"></script>
+  <script src="../static/tree.js"></script>
 </head>
+
 <body>
+
+
   <!-- Navbar Section -->
   <nav class="navbar navbar-expand-sm bg-dark navbar-light">
     <!-- Brand/logo -->
@@ -22,14 +30,14 @@
     <div class="collapse navbar-collapse" id="collapse_Navbar">
       <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link text-white" href="/">FILE IMPORT</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="/device/">PROJECT VIEW</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="/console/">OUTPUT LOG</a>
-          </li>
+          <a class="nav-link text-white" href="/">FILE IMPORT</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/device/">PROJECT VIEW</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/console/">OUTPUT LOG</a>
+        </li>
       </ul>
     </div>
   </nav>
@@ -46,45 +54,45 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="card-body" id="paths">
-                      <div class="p pb-3">
-                        <strong>Project View</strong>
-                      </div>
-                      <br>
-                      <div class="row mb-3">
-                        <div class="col">
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
-                            <input class="form-control" type="text" name="project" id="project" />
-                            <input class="btn btn-primary" type="button" onclick="openproject()" value="Select Project">
-                          </div>
+                    <div class="p pb-3">
+                      <strong>Project View</strong>
+                    </div>
+                    <br>
+                    <div class="row mb-3">
+                      <div class="col">
+                        <div class="input-group">
+                          <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                          <input class="form-control" type="text" name="project" id="project" />
+                          <input class="btn btn-primary" type="button" onclick="openproject()" value="Select Project">
                         </div>
                       </div>
-                      <div class="row mb-3">
-                        <div class="col">
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
-                            <input class="form-control" type="text" name="dll" id="dll" />
-                            <input class="btn btn-primary" type="button" onclick="selectDLL()" value="Select DLL">
-                          </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col">
+                        <div class="input-group">
+                          <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                          <input class="form-control" type="text" name="dll" id="dll" />
+                          <input class="btn btn-primary" type="button" onclick="selectDLL()" value="Select DLL">
                         </div>
                       </div>
-                      <div class="row mb-3">
-                        <div class="col">
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
-                            <input class="form-control" type="text" name="lib" id="lib" />
-                            <input class="btn btn-primary" type="button" onclick="selectLib()" value="Select Library">
-                          </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col">
+                        <div class="input-group">
+                          <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                          <input class="form-control" type="text" name="lib" id="lib" />
+                          <input class="btn btn-primary" type="button" onclick="selectLib()" value="Select Library">
                         </div>
                       </div>
-                      <br>
-                      <div class="row">
-                        <div class="col">
-                          <input class="btn btn-primary" type="button" onclick="save()" value="Save Changes">
-                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col">
+                        <input class="btn btn-primary" type="button" onclick="save()" value="Save Changes">
                       </div>
-                      <br>
-                      <form id="initPortal">
+                    </div>
+                    <br>
+                    <form id="initPortal">
                       <div class="p pb-3">
                         <strong>TIA Portal</strong>
                       </div>
@@ -92,7 +100,8 @@
                         <div class="col">
                           <br>
                           <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" onclick="change()" checked>
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                              onclick="change()" checked>
                             <label class="form-check-label" for="flexSwitchCheckChecked">Open TIA Portal with UI</label>
                           </div>
                           <br>
@@ -102,7 +111,22 @@
                           <br>
                         </div>
                       </div>
-                      </form>
+                      <br />
+                      <!-- project tree directory -->
+                      <ul role="tree" aria-labelledby="tree_label">
+                        <img src="../static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="removeDirectory()" />
+                        <img src="../static/images/add.png" alt="add-button" width="20" height="20" style="float: right;" onclick="addDirectory()" />
+                        <li role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)" ondragover="allowDrop(event)">
+                          <span id="title"> Program blocks </span> 
+                          <ul id="hakemisto" role="group">
+                          
+                          </ul>
+                        </li>
+                      </ul>
+
+                      <!--<p><label>File or Folder Selected: <input id="last_action" type="text" size="15"readonly=""></label> </p>-->
+                    
+                    </form>
                   </div>
                 </div>
               </div>
@@ -111,32 +135,33 @@
                   <div class="card-body">
                     <form id="tiaportal">
                       <div id="labels">
-                      <div class="p pb-3">
-                        <strong>Device</strong>
-                      </div>
-                      <div class="row mb-3">
-                        <div class="col">
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
-                            <input class="form-control" type="text" name="name" id="name" placeholder="Name" />
+                        <div class="p pb-3">
+                          <strong>Device</strong>
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col">
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                              <input class="form-control" type="text" name="name" id="name" placeholder="Name" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div class="row mb-3">
-                        <div class="col">
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
-                            <input class="form-control" type="text" name="type" id="type" placeholder="OrderNumber" />
+                        <div class="row mb-3">
+                          <div class="col">
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                              <input class="form-control" type="text" name="type" id="type" placeholder="OrderNumber" />
+                            </div>
                           </div>
                         </div>
-                      </div>
                       </div>
                       <div class="row">
                         <div class="col">
                           <button id="compile-button" class="btn btn-primary" disabled type="submit">
                             Compile
                           </button>
-                          <input id="device-button" class="btn btn-primary" type="button" disabled onclick="add()" value="Add Device">
+                          <input id="device-button" class="btn btn-primary" type="button" disabled onclick="add()"
+                            value="Add Device">
                         </div>
                       </div>
                     </form>
@@ -187,4 +212,43 @@
     </div>
   </div>
 </body>
+<!-- project tree directory -->
+<h3 id="tree_label">My Documents</h3>
+<ul role="tree" aria-labelledby="tree_label">
+  <li role="treeitem" aria-expanded="false" aria-selected="false">
+    <span> Projects </span>
+    <ul role="group">
+      <li role="treeitem" aria-selected="false" class="doc">project-1.docx</li>
+      <li role="treeitem" aria-selected="false" class="doc">project-2.docx</li>
+      <li id="div1" role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)"
+        ondragover="allowDrop(event)">
+        <span> Project 3 </span>
+        <ul role="group">
+          <li role="treeitem" aria-selected="false" class="doc">project-3A.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-3B.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-3C.docx</li>
+        </ul>
+      </li>
+      <li role="treeitem" aria-selected="false" class="doc">project-4.docx</li>
+      <li id="drag1" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true"
+        ondragstart="drag(event)">
+        <span> Project 5 </span>
+        <ul role="group">
+          <li role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">
+            project-5A.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-5B.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-5C.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-5D.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-5E.docx</li>
+          <li role="treeitem" aria-selected="false" class="doc">project-5F.docx</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>
+  <label>File or Folder Selected: <input id="last_action" type="text" size="15" readonly=""></label>
+</p>
+
 </html>

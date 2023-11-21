@@ -36,6 +36,9 @@ interface = True
 tia = []
 project = []
 dlist = []
+
+directory = {"test":["morro","morro2"],"test2":[]}
+
   
 @app.route("/openproject/", methods=["GET"])
 def openproject():
@@ -159,6 +162,12 @@ def getXML():
     writeXML(_nameArr, counter)
 
     return render_template("index.html")
+
+@app.route("/directory/")
+def directoryFunc():
+   
+    return jsonify(directory)
+
 
 @app.route("/tia/")
 def tiafunc():

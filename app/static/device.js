@@ -1,5 +1,84 @@
 
+
+
 $(document).ready(function() {
+
+
+   /*
+   const title = document.getElementById("title");
+
+   let datatext = '<img src="../static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)" />';
+   
+   title.innerHTML = datatext;
+   */
+
+   $.ajax({
+      type: 'GET',
+       url: '/directory/',
+      success: function(response) {
+      
+         const directory = document.getElementById("hakemisto");
+    
+         let myHTML = '';
+      
+      
+      /*
+         let files = '<li id="tag" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">Devices</li>';
+
+         for (let i = 0; i < 3; i++) {
+      
+            myHTML += '<li id="div'+i+'" role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)" tabindex="0"><span> '+1+' </span><ul role="group" >'+files+'</ul></li>';
+         
+         }
+
+         directory.innerHTML = myHTML;
+
+
+ */
+
+         let files = '';
+
+         let arr = Object.values(response)
+         let keys = Object.keys(response);
+         
+         
+           for (let i = 0; i < keys.length; i++) 
+           {
+             let k = arr[i]
+             console.log("directory: " + keys[i]);
+
+             if(k != undefined)
+             {
+               for (let a = 0; a < k.length; a++) 
+               {
+                   console.log("file: " + k[a]);
+                   files += '<li id="tag" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+k[a]+'</li>';
+               }
+             }
+            
+
+             myHTML += '<li id="div'+i+'" role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)" tabindex="0"><span> '+keys[i]+' </span><ul role="group" >'+files+'</ul></li>';
+             files = '';
+             
+           }
+
+
+
+           directory.innerHTML = myHTML;
+
+
+
+       }
+      
+
+   });
+
+
+  
+
+
+
+
 
     $('#tiaportal').submit(function(event) {
        event.preventDefault();
