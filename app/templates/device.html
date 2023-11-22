@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../static/app.css">
   <link rel="stylesheet" href="../static/tree.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/bb1065aba8.js" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="../static/device.js"></script>
@@ -114,18 +114,49 @@
                       <br />
                       <!-- project tree directory -->
                       <ul role="tree" aria-labelledby="tree_label">
-                        <img src="../static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="removeDirectory()" />
-                        <img src="../static/images/add.png" alt="add-button" width="20" height="20" style="float: right;" onclick="addDirectory()" />
-                        <li role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)" ondragover="allowDrop(event)">
-                          <span id="title"> Program blocks </span> 
+                        <img src="../static/images/delete.png" alt="delete-button" width="20" height="20"
+                          style="float: right;" onclick="removeDirectory()" />
+                        <a href="/add?name=ari"><img src="../static/images/add.png" alt="add-button" width="20"
+                            height="20" style="float: right;" onclick="addDirectory('ari')" /></a>
+                        <li role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)"
+                          ondragover="allowDrop(event)">
+                          <span id="title"> Program blocks </span>
                           <ul id="hakemisto" role="group">
-                          
+                            {% for e in mylist %}
+                              {% if e[0] == "project" %}
+                                {% for a in e %}
+                                    {% if loop.index > 1 %}
+                                    <li id="{{ a }}" role="treeitem" aria-selected="false" class="doc" draggable="true"
+                                    ondragstart="drag(event)">
+                                    {{a}}</li>
+                                     {% endif %}
+                                {% endfor %}
+                              {% endif %}
+
+                              {% if e[0] != "project" %}
+                            <li id="{{ e[0] }}" role="treeitem" aria-expanded="false" aria-selected="false" draggable="false"
+                              ondragstart="drag(event)">
+                              <span> {{e[0]}} </span>
+                              <ul role="group">
+                                {% for a in e %}
+                                    {% if loop.index > 1 %}
+                                    <li id="{{ a }}" role="treeitem" aria-selected="false" class="doc" draggable="true"
+                                      ondragstart="drag(event)">
+                                      {{a}}</li>
+                                    {% endif %}
+                                  {% endfor %}
+                              </ul>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
                           </ul>
                         </li>
                       </ul>
 
                       <!--<p><label>File or Folder Selected: <input id="last_action" type="text" size="15"readonly=""></label> </p>-->
-                    
+
+                      <!-- test -->
+
                     </form>
                   </div>
                 </div>

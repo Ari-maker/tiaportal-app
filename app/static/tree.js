@@ -542,30 +542,32 @@ function drag(ev) {
 function drop(ev) {
   ev.preventDefault();
   var data = ev.dataTransfer.getData("text");
+  let currentNode = ev.target.parentNode.lastElementChild.appendChild(document.getElementById(data));
 
-  if(ev.target.id == "tag") 
-  {
-    ev.target.appendChild(document.getElementById(data));
-  }
-  else
-  {
-    ev.target.parentNode.lastElementChild.appendChild(document.getElementById(data));
-  }
+ 
+
+    let obj = {
+      folder: ev.target.parentNode.id,
+      file:  currentNode.id
+  };
+
+    $.ajax({
+       type: 'POST',
+       url: '/updateFile/',
+       data: obj,
+      success: function(response) {
+     
+       }
+
+   });
+
+ 
+ 
+
+
 
 }
 
-function addDirectory() {
 
-  const directory = document.getElementById("hakemisto");
 
-  let data = directory.innerHTML;
-  
-    
-  let myHTML = '';
-
-  myHTML = '<li role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)" tabindex="0"><span> New Project </span><ul role="group" ></ul></li>';
-
-  directory.innerHTML =  directory.innerHTM + myHTML;
-
-}
 

@@ -37,7 +37,7 @@ tia = []
 project = []
 dlist = []
 
-directory = {"test":["morro","morro2"],"test2":[]}
+directory = [['project'],['tagit','Drives','DrivesData']]
 
   
 @app.route("/openproject/", methods=["GET"])
@@ -130,6 +130,9 @@ def add():
     
     print(_nameArr)
 
+    tex = "Inst"+_name
+    directory[0].append(tex)
+
     return jsonify({'type':_typeArr, 'name':_nameArr})
  
  
@@ -163,10 +166,18 @@ def getXML():
 
     return render_template("index.html")
 
-@app.route("/directory/")
-def directoryFunc():
+@app.route("/add")
+def addFunc():
    
-    return jsonify(directory)
+    #return jsonify(directory)
+    name = request.args.get('name')
+    print(name)
+
+    directory.append([name])
+
+    return render_template('device.html', mylist=directory)
+
+
 
 
 @app.route("/tia/")
@@ -212,7 +223,7 @@ def initTia():
     getXML()
 
     from openness import startProcess
-    startProcess(_typeArr, _nameArr, _consoleArr, dllpath, libpath, tia[0], project[0])
+    startProcess(_typeArr, _nameArr, _consoleArr, dllpath, libpath, tia[0], project[0], directory)
 
     #return redirect('/')
     return render_template("device.html")
@@ -268,7 +279,9 @@ def console():
 
 @app.route("/device/")
 def device():
-    return render_template("device.html")
+
+    return render_template('device.html', mylist=directory)
+
 
 @app.route("/importExcel/")
 def importExcel():
@@ -337,6 +350,41 @@ def interfaceUser():
         interface = True
 
     return jsonify({'interface':str(interface)})
+
+
+@app.route("/updateDirectory/", methods=["POST"])
+def updateDirectoryFunc():
+     _name = request.form['folderName']
+
+     #directory.update({_name:[]})
+
+     return jsonify(directory)
+
+@app.route("/updateFile/", methods=["POST"])
+def updateDIR():
+       _folder = request.form['folder']
+       _file = request.form['file']
+
+       print(_folder)
+       print(_file)
+
+
+        
+       for folder in directory:
+           for file in folder:
+               if file == _file:
+                   folder.remove(file)
+
+           if folder[0] == _folder:
+               folder.append(_file)
+
+
+       if _folder == "":
+           directory[0].append(_file)
+          
+
+       return render_template('device.html', mylist=directory) 
+
 
 
 @app.route("/saveFile/", methods=["POST"])

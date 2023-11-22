@@ -73,7 +73,7 @@ def init_func(_console, _path, dllPath, interface, tiaportal, project, dlist):
 
 
 
-def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject):  
+def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, directory):  
 
   try:
 
@@ -487,10 +487,27 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject):
 
       # EXPORT
 
-      plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
+      #plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
       unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\\openness-app\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
-      plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
+      #plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
     
+      for folder in directory:
+         if folder[0] != "project":
+            usergroup = software_base.BlockGroup.Groups.Create(folder[0])
+            for file in folder:
+               if file == "Drives":
+                  usergroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override) 
+               if file == "DrivesData":
+                  usergroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override) 
+               if "Inst" in file:
+                    blockComposition = usergroup.Blocks
+                    isAutoNumber = True
+                    instanceOfName = "SinaSpeedTest"
+                    number = 1
+                    iDbBlock = blockComposition.CreateInstanceDB(file, isAutoNumber, number, instanceOfName)
+         else:
+            plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
+            plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
       
       _consoleArr.append("export xml")
 
@@ -499,17 +516,17 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject):
       #unit.Export(FileInfo('C:\\export\\tulos\\typeSinaSpeedInterface.xml'), tia.ExportOptions.WithDefaults)
 
 
-      blockComposition = software_base.BlockGroup.Blocks
-      isAutoNumber = True
-      instanceOfName = "SinaSpeedTest"
-      number = 1
+      #blockComposition = software_base.BlockGroup.Blocks
+      #isAutoNumber = True
+      #instanceOfName = "SinaSpeedTest"
+      #number = 1
 
       # sinaSpeedTest
-      index = 0
-      for i in range(len(_name)):
-        iDBName = f"Inst{_name[i]}"    
-        iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number, instanceOfName)
-        index = index + 1
+      #index = 0
+      #for i in range(len(_name)):
+        #iDBName = f"Inst{_name[i]}"    
+        #iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number, instanceOfName)
+        #index = index + 1
 
 
       _consoleArr.append("CreateInstanceDB")
@@ -683,12 +700,12 @@ def initProcess(_console, path, dllPath, interface, tia, project, dlist):
     _console.append('An unexpected error has occurred. Please try again!!')
     _console.append('An exception occurred: {}'.format(e))
 
-def startProcess(_type, _name, _console, dllPath, libPath, tia, project):
+def startProcess(_type, _name, _console, dllPath, libPath, tia, project, directory):
    
 
   try:
 
-    x = threading.Thread(target=async_func, args=(_type,_name,_console,dllPath,libPath,tia,project,))
+    x = threading.Thread(target=async_func, args=(_type,_name,_console,dllPath,libPath,tia,project,directory,))
     x.start()
 
   except Exception as e:

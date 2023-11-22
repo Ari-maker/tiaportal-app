@@ -1,5 +1,5 @@
 {
    "project": "C:/projects/Harj4/Harj4.ap18",
-   "dll": "C:/Program Files/Siemens/Automation/Portal V18/PublicAPI/V18/Siemens.Engineering.dll",
+   "dll": "C:/Siemens/dlls/Siemens.Engineering.dll",
    "lib": "C:/projects/testLib/testLib.al18"
 }
