@@ -19,6 +19,8 @@
  * @description  after page has loaded initialize all treeitems based on the role=treeitem
  */
 
+let selectedValue = "";
+
 window.addEventListener('load', function () {
   var trees = document.querySelectorAll('[role="tree"]');
 
@@ -390,6 +392,7 @@ Treeitem.prototype.handleKeydown = function (event) {
           label = child ? child.innerText : treeitem.innerText;
         }
         document.getElementById('last_action').value = label.trim();
+      
 
         if (!this.isExpandable) this.tree.setFocusToItem(this);
         this.tree.setSelectedToItem(this);
@@ -520,6 +523,8 @@ window.addEventListener('load', function () {
         label = child ? child.innerText : treeitem.innerText;
       }
 
+    
+      selectedValue = label.trim();
       document.getElementById('last_action').value = label.trim();
 
       event.stopPropagation();
@@ -544,8 +549,9 @@ function drop(ev) {
   var data = ev.dataTransfer.getData("text");
   let currentNode = ev.target.parentNode.lastElementChild.appendChild(document.getElementById(data));
 
- 
-
+  console.log(ev.target.parentNode.id)
+  console.log(currentNode.id)
+  
     let obj = {
       folder: ev.target.parentNode.id,
       file:  currentNode.id
@@ -558,16 +564,27 @@ function drop(ev) {
       success: function(response) {
      
        }
+      
 
    });
-
- 
- 
-
-
 
 }
 
 
+function removeDirectory() {
 
+  let obj = {
+    folder: selectedValue,
+  };
+
+  $.ajax({
+    type: 'POST',
+    url: '/removeDirectory/',
+    data: obj,
+   success: function(response) {
+        location.reload();
+    }
+   
+});
+}
 

@@ -5,6 +5,7 @@ import smtplib
 from email.message import EmailMessage
 import openpyxl
 import json
+from treelib import Node, Tree
 app = Flask(__name__)
 
   
@@ -16,6 +17,16 @@ from tkinter.filedialog import askopenfilename
 
 #_type = '6SL3210-1KE11-8AF2/4.7.13';
 #_name = 'Device_1';
+
+#tree = Tree()
+#tree.create_node("Harry", "harry")  # root node
+#tree.create_node("Jane", "jane", parent="harry")
+#tree.create_node("Bill", "bill", parent="harry")
+#tree.create_node("Diane", "diane", parent="jane")
+#tree.create_node("Mary", "mary", parent="diane")
+#tree.create_node("Mark", "mark", parent="jane")
+#tree.show()
+
 
 _typeArr = []
 _nameArr = []
@@ -39,6 +50,12 @@ dlist = []
 
 directory = [['project'],['tagit','Drives','DrivesData']]
 
+tree = Tree()
+
+tree.create_node("Parent", "Parent")  # root node
+tree.create_node("DrivesData", "DrivesData", parent="Parent")
+tree.create_node("test", "test", parent="Parent")
+tree.create_node("Drives", "Drives", parent="test")
   
 @app.route("/openproject/", methods=["GET"])
 def openproject():
@@ -103,7 +120,11 @@ def load():
     return jsonify({'project':mypath, 'dll':dllpath,'lib':libpath})
 
 
-@app.route("/add/", methods=["POST"])
+@app.route("/getDevices/")
+def getDevices():
+        return jsonify({'type':_typeArr, 'name':_nameArr})
+
+@app.route("/addDevice/", methods=["POST"])
 def add():
 
     if request.method == "POST":
@@ -130,8 +151,7 @@ def add():
     
     print(_nameArr)
 
-    tex = "Inst"+_name
-    directory[0].append(tex)
+    tree.create_node("Inst"+_name, "Inst"+_name, parent="Parent")
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
  
@@ -166,18 +186,57 @@ def getXML():
 
     return render_template("index.html")
 
+
 @app.route("/add")
 def addFunc():
-   
-    #return jsonify(directory)
+
     name = request.args.get('name')
-    print(name)
-
-    directory.append([name])
-
-    return render_template('device.html', mylist=directory)
 
 
+
+    parentArr = json.loads(tree.to_json(with_data=False))
+
+
+    
+    def treeToHtml(array, content, nest):
+      
+        for node in array:
+
+            if isinstance(node, dict):
+          
+                currentkey = ''
+                for key in node.keys(): 
+                    currentkey = key
+                    
+                content += '<li id="'+currentkey+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+currentkey+'</span><ul role="group">'
+
+                for file in node[currentkey]["children"]:
+                 
+                    if isinstance(file, dict):
+                        for key in file.keys(): 
+                        
+                            content = treeToHtml(node[currentkey]["children"], content, True)
+                   
+                    else:
+                        content += '<li id="'+file+'" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+file+'</li>'
+                
+
+                content += '</ul></li>'
+
+            elif nest is False:   
+                content += '<li id="'+node+'" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+node+'</li>'
+
+
+        return content
+    
+    content = ''
+    html = treeToHtml(parentArr["Parent"]["children"], content, False)
+
+    tree.create_node(name, name, parent="Parent")
+
+    html += '<li id="'+name+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+name+'</span><ul role="group"></ul></li>'
+
+    return render_template('device.html', mylist=html)
 
 
 @app.route("/tia/")
@@ -221,6 +280,8 @@ def initTia():
         return 400
     
     getXML()
+
+    directory = json.loads(tree.to_json(with_data=False))
 
     from openness import startProcess
     startProcess(_typeArr, _nameArr, _consoleArr, dllpath, libpath, tia[0], project[0], directory)
@@ -280,7 +341,49 @@ def console():
 @app.route("/device/")
 def device():
 
-    return render_template('device.html', mylist=directory)
+    # parse x:
+    parentArr = json.loads(tree.to_json(with_data=False))
+  
+    def treeToHtml(array, content, nest):
+      
+        for node in array:
+
+            if isinstance(node, dict):
+          
+                currentkey = ''
+                for key in node.keys(): 
+                    currentkey = key
+                    
+                content += '<li id="'+currentkey+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+currentkey+'</span><ul role="group">'
+
+                for file in node[currentkey]["children"]:
+                 
+                    if isinstance(file, dict):
+                        for key in file.keys(): 
+                        
+                            content = treeToHtml(node[currentkey]["children"], content, True)
+                   
+                    else:
+                        content += '<li id="'+file+'" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+file+'</li>'
+                
+
+                content += '</ul></li>'
+
+            elif nest is False:   
+
+                if "*" in node:
+                    node=node.replace("*","")
+                    content += '<li id="'+node+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+node+'</span><ul role="group"></ul></li>'  
+                else:  
+                    content += '<li id="'+node+'" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+node+'</li>'
+
+
+        return content
+    
+    content = ''
+    html = treeToHtml(parentArr["Parent"]["children"], content, False)
+    
+    return render_template('device.html', mylist=html)
 
 
 @app.route("/importExcel/")
@@ -352,13 +455,22 @@ def interfaceUser():
     return jsonify({'interface':str(interface)})
 
 
-@app.route("/updateDirectory/", methods=["POST"])
-def updateDirectoryFunc():
-     _name = request.form['folderName']
+@app.route("/removeDirectory/", methods=["POST"])
+def removeDir():
+    _dir = request.form['folder']
+   
+    tree.remove_node("*"+_dir)
 
-     #directory.update({_name:[]})
+    return render_template('index.html') 
 
-     return jsonify(directory)
+
+@app.route("/addDirectory/", methods=["POST"])
+def addDir():
+    _dir = request.form['foldername']
+    tree.create_node("*"+_dir, "*"+_dir, parent="Parent")
+
+    return render_template('device.html') 
+
 
 @app.route("/updateFile/", methods=["POST"])
 def updateDIR():
@@ -368,22 +480,10 @@ def updateDIR():
        print(_folder)
        print(_file)
 
+       tree.move_node(_file, _folder) 
+   
 
-        
-       for folder in directory:
-           for file in folder:
-               if file == _file:
-                   folder.remove(file)
-
-           if folder[0] == _folder:
-               folder.append(_file)
-
-
-       if _folder == "":
-           directory[0].append(_file)
-          
-
-       return render_template('device.html', mylist=directory) 
+       return render_template('device.html') 
 
 
 

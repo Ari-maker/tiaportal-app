@@ -1,5 +1,32 @@
 $(document).ready(function() {
 
+   $.ajax({
+      type: 'GET',
+      url: '/getDevices/',
+      success: function(response) {
+         
+         let typeArr = response.type;
+         let nameArr = response.name;
+
+         const laskuri = document.getElementsByClassName("laskuri");
+         const panel = document.getElementsByClassName("panel panel-primary");
+ 
+         let myHTML = '';
+       
+         for (let i = 0; i < typeArr.length; i++) {
+          
+           myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
+           myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
+ 
+         }
+       
+         panel[0].innerHTML = myHTML
+
+         laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
+
+      }
+   });
+
     $('#tiaportal').submit(function(event) {
        event.preventDefault();
        $("#myModal2").modal();
@@ -129,31 +156,13 @@ $(document).ready(function() {
 function add() {   
     $.ajax({
              type: 'POST',
-             url: '/add/',
+             url: '/addDevice/',
              data: $('#tiaportal').serialize(),
              success: function(response) {
                 $('#type').val('');
                 $('#name').val('');
             
-    
-                let typeArr = response.type;
-                let nameArr = response.name;
-    
-                const laskuri = document.getElementsByClassName("laskuri");
-                const panel = document.getElementsByClassName("panel panel-primary");
-        
-                let myHTML = '';
-              
-                for (let i = 0; i < typeArr.length; i++) {
-                 
-                  myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
-                  myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
-        
-                }
-              
-                panel[0].innerHTML = myHTML
-    
-                laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
+                location.reload();
     
              }
           });
@@ -275,3 +284,28 @@ function select(name){
 
 }
 
+function addDirectory() {
+
+   let value = document.getElementById("folder").value;
+
+   if (value == "")
+      return;
+
+   let obj = {
+      foldername: value
+   }
+
+   $.ajax({
+      type: 'POST',
+      url: '/addDirectory/',
+      data: obj,
+      success: function(response) {
+      
+         location.reload();
+
+      }
+   });
+
+
+
+}

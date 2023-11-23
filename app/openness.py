@@ -491,23 +491,99 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
       unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\\openness-app\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
       #plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
     
-      for folder in directory:
-         if folder[0] != "project":
-            usergroup = software_base.BlockGroup.Groups.Create(folder[0])
-            for file in folder:
-               if file == "Drives":
-                  usergroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override) 
-               if file == "DrivesData":
-                  usergroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override) 
-               if "Inst" in file:
-                    blockComposition = usergroup.Blocks
-                    isAutoNumber = True
-                    instanceOfName = "SinaSpeedTest"
-                    number = 1
-                    iDbBlock = blockComposition.CreateInstanceDB(file, isAutoNumber, number, instanceOfName)
-         else:
-            plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
-            plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
+      #for folder in directory:
+         #if folder[0] != "project":
+           # usergroup = software_base.BlockGroup.Groups.Create(folder[0])
+            #for file in folder:
+               #if file == "Drives":
+                  #usergroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override) 
+               #if file == "DrivesData":
+                  #usergroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override) 
+              # if "Inst" in file:
+                    #blockComposition = usergroup.Blocks
+                    #isAutoNumber = True
+                    #instanceOfName = "SinaSpeedTest"
+                   # number = 1
+                    #iDbBlock = blockComposition.CreateInstanceDB(file, isAutoNumber, number, instanceOfName)
+         #else:
+            
+            #plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
+           # plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
+
+
+
+     
+
+
+      def treeToOpenness(array, nest, usergroup):
+        
+          for node in array:
+
+              if isinstance(node, dict):
+                  # groups
+                  currentkey = ''
+                  for key in node.keys(): 
+                      currentkey = key
+
+                  # create folder == currentkey
+                  #currentkey=currentkey.replace("*","")
+                  print("created: " + currentkey)   
+                  _consoleArr.append("create folder: " + currentkey) 
+                  if nest is False:
+                      usergroup = software_base.BlockGroup.Groups.Create(currentkey)
+                  else:
+                      usergroup = usergroup.Groups.Create(currentkey)
+
+
+                  for file in node[currentkey]["children"]:
+                      if isinstance(file, dict):
+                          # once!
+                          for key in file.keys(): 
+                      
+                              treeToOpenness(node[currentkey]["children"], True, usergroup)
+                      else:
+                          if file == "Drives":
+                              print("Drives")
+                              _consoleArr.append("Drives") 
+                              # import Drives
+                              usergroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override) 
+
+                          if file == "DrivesData":
+                              print("DrivesData")
+                              _consoleArr.append("DrivesData") 
+                              # import DrivesData
+                              usergroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override) 
+                          if "Inst" in file:
+                              blockComposition = usergroup.Blocks
+                              isAutoNumber = True
+                              instanceOfName = "SinaSpeedTest"
+                              number = 1
+                              iDbBlock = blockComposition.CreateInstanceDB(file, isAutoNumber, number, instanceOfName)
+
+              elif nest is False: 
+                  # main directory (no groups)
+                  if node == "Drives":
+                      print("Drives")
+                      _consoleArr.append("Drives") 
+                      # import Drives
+                      plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
+                  if node == "DrivesData":
+                      print("DrivesData")
+                      _consoleArr.append("DrivesData") 
+                      # import DrivesData
+                      plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
+                  if "Inst" in node:
+                      blockComposition = software_base.BlockGroup.Blocks
+                      isAutoNumber = True
+                      instanceOfName = "SinaSpeedTest"
+                      number = 1
+                      iDbBlock = blockComposition.CreateInstanceDB(node, isAutoNumber, number, instanceOfName)
+              
+      usergroup = 0        
+      treeToOpenness(directory["Parent"]["children"], False, usergroup)
+
+
+
       
       _consoleArr.append("export xml")
 
