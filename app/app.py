@@ -48,14 +48,12 @@ tia = []
 project = []
 dlist = []
 
-directory = [['project'],['tagit','Drives','DrivesData']]
-
 tree = Tree()
 
 tree.create_node("Parent", "Parent")  # root node
-tree.create_node("DrivesData", "DrivesData", parent="Parent")
-tree.create_node("test", "test", parent="Parent")
-tree.create_node("Drives", "Drives", parent="test")
+tree.create_node("DrivesData [DB]", "DrivesData [DB]", parent="Parent")
+tree.create_node("Drives [OB]", "Drives [OB]", parent="Parent")
+
   
 @app.route("/openproject/", methods=["GET"])
 def openproject():
@@ -96,6 +94,9 @@ def delete():
     _nameArr.remove(name)
     _typeArr.pop(index)
 
+    removeDIR = "Inst"+name+" [DB]"
+
+    tree.remove_node(removeDIR)
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
 
@@ -151,7 +152,7 @@ def add():
     
     print(_nameArr)
 
-    tree.create_node("Inst"+_name, "Inst"+_name, parent="Parent")
+    tree.create_node("Inst"+_name+" [DB]", "Inst"+_name+" [DB]", parent="Parent")
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
  
@@ -161,13 +162,13 @@ def add():
 def index(): 
     # resetoidaan
     global myproject
-    myproject = ''
+    #myproject = ''
     global mypath 
-    mypath = ''
+    #mypath = ''
     global _typeArr
-    _typeArr = []
+    #_typeArr = []
     global _nameArr
-    _nameArr = []
+    #_nameArr = []
     global interface
     interface = True
    
@@ -242,9 +243,9 @@ def addFunc():
 @app.route("/tia/")
 def tiafunc():
     if len(tia) != 0:
-        return jsonify({'tia':1,'dlist:':dlist})
+        return jsonify({'tia':1, 'dlist':dlist})
 
-    return jsonify({'tia':0})
+    return jsonify({'tia':0,})
 
 @app.route("/tiaportal/", methods=["POST"])
 def initTia():
@@ -371,11 +372,10 @@ def device():
 
             elif nest is False:   
 
-                if "*" in node:
-                    node=node.replace("*","")
-                    content += '<li id="'+node+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+node+'</span><ul role="group"></ul></li>'  
-                else:  
+                if "[" in node:
                     content += '<li id="'+node+'" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+node+'</li>'
+                else:  
+                    content += '<li id="'+node+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+node+'</span><ul role="group"></ul></li>'  
 
 
         return content
@@ -384,6 +384,47 @@ def device():
     html = treeToHtml(parentArr["Parent"]["children"], content, False)
     
     return render_template('device.html', mylist=html)
+
+
+
+@app.route("/tiaportalExcel/", methods=["POST"])
+def tiaportalExcel():
+    
+    global _typeArr
+    global _nameArr
+    global mypath
+    global _consoleArr
+    global dllpath
+    global libpath
+    global interface
+    _consoleArr = []
+
+    print(_typeArr)
+    print(_nameArr)
+    print(mypath)
+    
+    if not mypath:
+        return 400
+
+    if not _typeArr: 
+        return 400
+    
+    if not _nameArr:
+        return 400
+   
+    if not dllpath:
+        return 400
+    
+    if not libpath:
+       return 400
+    
+    getXML()
+
+    from openness import startProcessExcel
+    startProcessExcel(_typeArr, _nameArr, mypath, _consoleArr, dllpath, libpath, interface)
+    
+
+    return render_template("index.html")
 
 
 @app.route("/importExcel/")
@@ -459,7 +500,7 @@ def interfaceUser():
 def removeDir():
     _dir = request.form['folder']
    
-    tree.remove_node("*"+_dir)
+    tree.remove_node(_dir)
 
     return render_template('index.html') 
 
@@ -467,23 +508,29 @@ def removeDir():
 @app.route("/addDirectory/", methods=["POST"])
 def addDir():
     _dir = request.form['foldername']
-    tree.create_node("*"+_dir, "*"+_dir, parent="Parent")
+    tree.create_node(_dir, _dir, parent="Parent")
 
     return render_template('device.html') 
 
 
 @app.route("/updateFile/", methods=["POST"])
 def updateDIR():
-       _folder = request.form['folder']
-       _file = request.form['file']
+        _folder = request.form['folder']
+        _file = request.form['file']
 
-       print(_folder)
-       print(_file)
+        print(_folder)
+        print(_file)
 
-       tree.move_node(_file, _folder) 
-   
+        global tree
 
-       return render_template('device.html') 
+        if _folder == "":
+            tree.move_node(_file, "Parent") 
+        else:
+            tree.move_node(_file, _folder) 
+      
+        print("tree: "+ tree.to_json(with_data=False))
+
+        return render_template('device.html') 
 
 
 

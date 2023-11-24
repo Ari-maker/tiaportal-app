@@ -5,6 +5,9 @@ $(document).ready(function() {
       url: '/getDevices/',
       success: function(response) {
          
+         if (response.name.length <= 0)
+            return;
+
          let typeArr = response.type;
          let nameArr = response.name;
 
@@ -15,7 +18,7 @@ $(document).ready(function() {
        
          for (let i = 0; i < typeArr.length; i++) {
           
-           myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
+           myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="../static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
            myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
  
          }
@@ -107,6 +110,7 @@ $(document).ready(function() {
       type: 'GET',
        url: '/tia/',
       success: function(response) {
+   
          if (response.tia == 1)
          {
            document.getElementById('device-button').removeAttribute("disabled");
@@ -162,8 +166,8 @@ function add() {
                 $('#type').val('');
                 $('#name').val('');
             
-                location.reload();
-    
+                //location.reload();
+                window.location.href = "/device";
              }
           });
        }  
@@ -255,6 +259,9 @@ function select(name){
      data: {"name":name},
      success: function(response) {
 
+      window.location.href = "/device";
+
+      /*
         let typeArr = response.type;
         let nameArr = response.name;
 
@@ -277,6 +284,7 @@ function select(name){
         panel[0].innerHTML = myHTML
 
         laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
+        */
      }
 
   });
@@ -301,7 +309,7 @@ function addDirectory() {
       data: obj,
       success: function(response) {
       
-         location.reload();
+         window.location.href = "/device";
 
       }
    });

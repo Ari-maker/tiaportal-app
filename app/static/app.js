@@ -5,7 +5,7 @@ $(document).ready(function() {
       event.preventDefault();
       $.ajax({
          type: 'POST',
-         url: '/tiaportal/',
+         url: '/tiaportalExcel/',
          data: $('#tiaportal').serialize(),
          success: function() {
             $('#type').val('');
