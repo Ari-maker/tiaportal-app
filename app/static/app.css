@@ -2,3 +2,24 @@
     display: none;
 }
 
+#projektipuu {
+    float: left;
+    width: 60%;
+}
+
+#polut {
+    float: right;
+    width: 40%;
+}
+
+#up {
+    display: flex;
+}
+
+.col-md-0 {
+    padding: 10px;
+}
+
+#port {
+    margin: 10px;
+}

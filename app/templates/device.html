@@ -52,12 +52,39 @@
             </div>
             <div class="card mb-0" data-aos="zoom-in">
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-0">
                   <div class="card-body" id="paths">
-                    <div class="p pb-3">
-                      <strong>Project View</strong>
+                 
+                    <div id="up">
+                      <div id="projektipuu">
+                        <div class="p pb-3">
+                          <strong>Project Hierarchy</strong>
+                        </div>
+                        <!-- project tree directory -->
+                        <div class="input-group">
+                          <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
+                          <input class="form-control" type="text" id="folder" placeholder="Folder name" style="width: 50%;" />
+                        </div>
+                        <br />
+                        <ul role="tree" aria-labelledby="tree_label">
+                          <img onclick="removeDirectory()" src="../static/images/delete.png" alt="delete-button" width="20" height="20"
+                            style="float: right;" />
+                          <img onclick="addDirectory()" src="../static/images/add.png" alt="add-button" width="20"
+                              height="20" style="float: right;" />
+                          <li id="maintree" role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)"
+                            ondragover="allowDrop(event)">
+                            <span id="title"> Program blocks </span>
+                            <ul id="hakemisto" role="group">
+                                {{ mylist|safe  }}
+                            </ul>
+                          </li>
+                        </ul>
                     </div>
-                    <br>
+                    
+                    <div id="polut">
+                      <div class="p pb-3">
+                        <strong>Project Paths</strong>
+                      </div>
                     <div class="row mb-3">
                       <div class="col">
                         <div class="input-group">
@@ -91,13 +118,15 @@
                         <input class="btn btn-primary" type="button" onclick="save()" value="Save Changes">
                       </div>
                     </div>
+                  </div>
+                  </div>
                     <br>
                     <form id="initPortal">
                       <div class="p pb-3">
                         <strong>TIA Portal</strong>
                       </div>
                       <div class="row">
-                        <div class="col">
+                        <div class="col" id="port">
                           <br>
                           <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
@@ -112,25 +141,7 @@
                         </div>
                       </div>
                       <br />
-                      <!-- project tree directory -->
-                      <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-user-circle"></i></span>
-                        <input class="form-control" type="text" id="folder" placeholder="Folder name" style="width: 50%;" />
-                      </div>
-                      <br />
-                      <ul role="tree" aria-labelledby="tree_label">
-                        <img onclick="removeDirectory()" src="../static/images/delete.png" alt="delete-button" width="20" height="20"
-                          style="float: right;" />
-                        <img onclick="addDirectory()" src="../static/images/add.png" alt="add-button" width="20"
-                            height="20" style="float: right;" />
-                        <li role="treeitem" aria-expanded="false" aria-selected="false" ondrop="drop(event)"
-                          ondragover="allowDrop(event)">
-                          <span id="title"> Program blocks </span>
-                          <ul id="hakemisto" role="group">
-                              {{ mylist|safe  }}
-                          </ul>
-                        </li>
-                      </ul>
+                  
 
                       <!--<p><label>File or Folder Selected: <input id="last_action" type="text" size="15"readonly=""></label> </p>-->
 

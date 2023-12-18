@@ -355,7 +355,7 @@ def device():
                 for key in node.keys(): 
                     currentkey = key
                     
-                content += '<li id="'+currentkey+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+currentkey+'</span><ul role="group">'
+                content += '<li id="'+currentkey+'" role="treeitem" aria-expanded="false" aria-selected="false" class="folder" draggable="true" ondragstart="drag(event)"><span>'+currentkey+'</span><ul role="group">'
 
                 for file in node[currentkey]["children"]:
                  
@@ -375,7 +375,7 @@ def device():
                 if "[" in node:
                     content += '<li id="'+node+'" role="treeitem" aria-selected="false" class="doc" draggable="true" ondragstart="drag(event)">'+node+'</li>'
                 else:  
-                    content += '<li id="'+node+'" role="treeitem" aria-expanded="false" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+node+'</span><ul role="group"></ul></li>'  
+                    content += '<li id="'+node+'" role="treeitem" aria-expanded="false" class="folder" aria-selected="false" draggable="true" ondragstart="drag(event)"><span>'+node+'</span><ul role="group"></ul></li>'  
 
 
         return content

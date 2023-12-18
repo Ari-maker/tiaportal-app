@@ -10,6 +10,7 @@ ul[role="tree"] {
     margin: 0;
     padding: 0;
     list-style: none;
+    margin-left: 25px;
   }
   
   [role="treeitem"][aria-expanded="false"] + [role="group"] {
@@ -27,8 +28,15 @@ ul[role="tree"] {
     padding-right: 2px;
     padding-left: 5px;
     vertical-align: middle;
+    padding: 10px;
   }
   
+
+  [role="treeitem"][Class="folder"] {
+      margin-left: 12px;
+      border: none !important;
+  }
+
   [role="treeitem"][aria-expanded="false"] > ul {
     display: none;
   }
@@ -39,7 +47,8 @@ ul[role="tree"] {
   
   [role="treeitem"][aria-expanded="false"] > span::before {
     font-family: "Font Awesome 5 Free";
-    content: "\f07b";
+    content: "\f0fe\f068\0000a0\0000a0\f07b";
+    /*content: "\f07b";*/
     display: inline-block;
     padding-right: 3px;
     vertical-align: middle;
@@ -48,16 +57,18 @@ ul[role="tree"] {
   
   [role="treeitem"][aria-expanded="true"] > span::before {
     font-family: "Font Awesome 5 Free";
-    content: "\f07c";
+    content: "\f146\f068\0000a0\0000a0\f07c";
+    /*content: "\f07c";*/
     display: inline-block;
     padding-right: 3px;
     vertical-align: middle;
     font-weight: 900;
+    
   }
   
   [role="treeitem"],
   [role="treeitem"] span {
-    width: 10em;
+    width: 12em;
     margin: 0;
     padding: 0.125em;
     display: block;
@@ -69,9 +80,25 @@ ul[role="tree"] {
     outline: 0;
   }
   
+  /*
   [role="treeitem"][aria-selected="true"] {
     padding-left: 4px;
     border-left: 5px solid #005a9c;
+  }
+  */
+
+  [role="treeitem"][aria-selected="false"] {
+    padding-left: 4px;
+    border-left: 2px solid #333;
+  }
+
+  [role="treeitem"][aria-selected="true"] {
+    padding-left: 4px;
+    border-left: 2px solid #333;
+  }
+
+  #maintree {
+    border-left: none;
   }
   
   [role="treeitem"].focus,
@@ -84,6 +111,6 @@ ul[role="tree"] {
   [role="treeitem"] span:hover {
     padding-left: 4px;
     background-color: #ddd;
-    border-left: 5px solid #333;
+    border-left: 2px solid #005a9c;
   }
   

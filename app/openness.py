@@ -56,7 +56,7 @@ def init_func(_console, _path, dllPath, interface, tiaportal, project, dlist):
 
         project.append(myproject)
 
-      
+        _console.append("project opened")
            
 
       except Exception as e:
