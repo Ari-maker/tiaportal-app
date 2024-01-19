@@ -1,20 +1,25 @@
-import time
 import threading
 import ipaddress
 import os 
-
 import xml.etree.ElementTree as ET
 ET.register_namespace("", "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4")
 
-
-
-def init_func(_console, _path, dllPath, interface, tiaportal, project, dlist):
+# PROJECT PAGE
+# The function is called when the 'Start TIA Portal' button is clicked.
+# The purpose of the function is to start a TIA Portal project. 
+# "_console" parameter can be used to send logs to the ui console
+#  "_path" parameter is the project path.
+# "dllPath" parameter is the path to "Siemens.Engineering.dll"
+# "If the "ui" parameter is true, TIA Portal starting "WithUserInterface"; otherwise, "WithoutUserInterface".
+# "project" parameter is the project instance.
+# "tiaportal" parameter is the TIA instance.
+# "dlist" parameter is the device list.
+def init_func(_console, _path, dllPath, ui, tiaportal, project, dlist):
     try:
-
+      # If the path to the 'Siemens.Engineering.dll' is valid, Siemens libraries are imported.
       import clr
-      #clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\V18\\Siemens.Engineering.dll')
       clr.AddReference(dllPath)
-      from System.IO import DirectoryInfo, FileInfo
+      from System.IO import FileInfo
       import Siemens.Engineering as tia
       import Siemens.Engineering.HW.Features as hwf
       import Siemens.Engineering.SW.Units as units
@@ -22,65 +27,77 @@ def init_func(_console, _path, dllPath, interface, tiaportal, project, dlist):
       import Siemens.Engineering.Library as lib
       import os
 
-      
+      # Add to the console.
       print("tiaportal")
       _console.append("tiaportal")
 
-      if interface is True:
+      # "If the "ui" parameter is true, TIA Portal starting "WithUserInterface"; otherwise, "WithoutUserInterface".
+      if ui is True:
         mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
       else:
         mytia = tia.TiaPortal(tia.TiaPortalMode.WithoutUserInterface)
 
-      processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
+      # Making a list of all running processes
+      processes = tia.TiaPortal.GetProcesses() 
+      # Add to the console.
       print (processes)
       _console.append("process: "+str(processes))
 
+      # "tiaportal" parameter is now "mytia"
       tiaportal.append(mytia)
 
       try:
-
-        # list 
+        # For loop for iterating over the 'HardwareCatalog' list
         for deviceList in mytia.HardwareCatalog.Find("G120C PN"):
            d = deviceList.TypeIdentifier
            d = d.replace("OrderNumber:", "")
            print(d)
+           # Add the device to the 'dlist' list.
            dlist.append(d)
 
+        # Add to the console.
         print(_path)
         _console.append("project path: "+_path)
-        #myproject = mytia.Projects.Create(project_path, project_name)
+    
+        # "project_path" is now "_path"
         project_path = FileInfo (_path)
-        #global myproject
+        # "myproject" is now an instance of the project.
         myproject = mytia.Projects.OpenWithUpgrade(project_path)
-        #print(myproject)
-
+        # "project" parameter is now "myproject"
         project.append(myproject)
 
+        # Add to the console.
         _console.append("project opened")
            
-
       except Exception as e:
+        # Add an error to the console.
         print (e)
         _console.append(e)
         pass
 
-
-
-
     except Exception as e:
+        # Add an error to the console.
         _console.append('An unexpected error has occurred. Please try again!!')
         _console.append('An exception occurred: {}'.format(e))
 
 
-
+# The function is called when the 'compile' button is clicked
+# The purpose of the function is to generate program blocks in the project.
+# "_type" is a list of OrderNumbers.
+# "_name" is a list of device names.
+# "_consoleArr" parameter can be used to send logs to the ui console.
+# "dllPath" parameter is the path to "Siemens.Engineering.dll".
+# "libPath" is the path to the library.
+# "mytia" parameter is the TIA instance.
+# "myproject" parameter is the project instance.
 def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, directory):  
 
+  # Using try/except in case project allready exists
   try:
-
+      # If the path to the 'Siemens.Engineering.dll' is valid, Siemens libraries are imported.
       import clr
-      #clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\V18\\Siemens.Engineering.dll')
       clr.AddReference(dllPath)
-      from System.IO import DirectoryInfo, FileInfo
+      from System.IO import FileInfo
       import Siemens.Engineering as tia
       import Siemens.Engineering.HW.Features as hwf
       import Siemens.Engineering.SW.Units as units
@@ -88,42 +105,12 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
       import Siemens.Engineering.Library as lib
       import os
 
-
-      # Creating a new project. Using try/except in case project allready exists
-  
-      #project_path = DirectoryInfo ('C:\\Openness\\PKI')
-      
-  
-   
-      #Adding the main components
-
-      #print ('Creating PLC1')
-      #PLC1_mlfb = 'OrderNumber:6ES7 513-1AL02-0AB0/V2.6'
-      #PLC1 = myproject.Devices.CreateWithItem(PLC1_mlfb, 'PLC1', 'PLC1')
-
-
-      #print ('Creating IOnode1')
-      #IOnode1_mlfb = 'OrderNumber:6ES7 155-6AU01-0BN0/V4.1'
-      #IOnode1 = myproject.Devices.CreateWithItem(IOnode1_mlfb, 'IOnode1', 'IOnode1')
-
-
-      #print ('Creating HMI1')
-      #HMI1_mlfb = 'OrderNumber:6AV2 124-0GC01-0AX0/15.1.0.0'
-      #HMI1 = myproject.Devices.CreateWithItem(HMI1_mlfb, 'HM1', None)
-
-      #ToDo Add start screen to avoid compilation error fo the HMI
-
-
-          #print ('Creating PN')
-          #print(str(_name.index(n)))
-          #PN_mlfb = 'OrderNumber:'+ str(_type.index(n));
-          #PN = myproject.Devices.CreateWithItem(PN_mlfb,  str(_name.index(n)), None)
-
-      # tsekataan onko yhtakaan laitetta olemassa jos ei ole niin luodaan PLC
+      # Check if any PLC exists, if not, create a new PLC
       count = 0
       for device in myproject.Devices:
           count+=1
 
+      # Add to the console.
       print('Devices: '+ str(count))
       _consoleArr.append('Devices: '+ str(count))
 
@@ -131,37 +118,23 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
           print ('Creating PLC1')
           _consoleArr.append('Creating PLC1')
           PLC1_mlfb = 'OrderNumber:6ES7 511-1AL03-0AB0/V3.0'
+          # creating a new PLC
           PLC1 = myproject.Devices.CreateWithItem(PLC1_mlfb, 'PLC1', 'PLC1')
     
-
-      # display indices in the list
+      # For loop for iterating over the added devices
       for i in range(len(_type)):
           print(i, _type[i])
           _consoleArr.append(str(_type[i]))
           print(i, _name[i])
           _consoleArr.append(str(_name[i]))
           PN_mlfb = 'OrderNumber:'+ str(_type[i])
+          # Creating a new device in the TIA Portal project.
           PN = myproject.Devices.CreateWithItem(PN_mlfb,  str(_name[i]), None)
 
       # Adding IO cards to the PLC and IO station
-      # This is basic to show how it works, use loops with checks (CanPlugNew) to see if the slot is available
-      # CanPlugnew is not mandatory, but usefull in real code
-
-      #if (PLC1.DeviceItems[0].CanPlugNew('OrderNumber:6ES7 521-1BL00-0AB0/V2.1','IO1',2)): 
-        # PLC1.DeviceItems[0].PlugNew('OrderNumber:6ES7 521-1BL00-0AB0/V2.1','IO1', 2)
-
-          
-      #if (IOnode1.DeviceItems[0].CanPlugNew('OrderNumber:6ES7 131-6BH01-0BA0/V0.0','IO1',1)):
-        # IOnode1.DeviceItems[0].PlugNew('OrderNumber:6ES7 131-6BH01-0BA0/V0.0','IO1', 1)
-
-
-
-      #
-      # # Creating network, iosytem and setting IP adresses
-      # 
-
-    
-      #creating a list of all found network interfaces on all stations in the station list
+      # This is basic to show how it works, using loops with checks (CanPlugNew) to see if the slot is available
+      # Creating network, iosytem and setting IP adresses
+      # creating a list of all found network interfaces on all stations in the station list
       n_interfaces = []
       for device in myproject.Devices:
           
@@ -172,36 +145,21 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
                   print(str(device.Name)+': '+str(info.Name))
                   _consoleArr.append(str(device.Name)+': '+str(info.Name))
               
-          
           device_item_aggregation = device.DeviceItems[1].DeviceItems
           for deviceitem in device_item_aggregation:
               network_service = tia.IEngineeringServiceProvider(deviceitem).GetService[hwf.NetworkInterface]()
               if type(network_service) is hwf.NetworkInterface:
                   n_interfaces.append(network_service)
 
-
-
-
-      # Assigning an IP to each item in the list (dirty code, but to demonstrate how theAPI works)
-
-      #n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
-    # n_interfaces[1].Nodes[0].SetAttribute('Address','192.168.0.131')
-    # n_interfaces[2].Nodes[0].SetAttribute('Address','192.168.0.132')
-      #n_interfaces[len(n_interfaces)-1].Nodes[0].SetAttribute('Address','140.80.0.204')
-      #n_interfaces[0].Nodes[0].SetAttribute('Address','140.80.0.200')
-      #n_interfaces[1].Nodes[0].SetAttribute('Address','140.80.0.202')
-      #n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
-
+      # Assigning an IP to each item in the list
       if count == 0:
           n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
 
-      
       add = n_interfaces[0].Nodes[0].GetAttribute('Address')
       
+      # Add to the console.
       print(add)
       _consoleArr.append("IP Address: "+str(add))
-
-      #n_interfaces[1].Nodes[0].SetAttribute('Address', a)
 
       # Creating subnet and IO system on the first item in the list
       # Connects to subnet for remaining devices, if IO device it gets assigned to the IO system
@@ -209,21 +167,16 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
           if count == 0:
               count = 1
               subnet = n_interfaces[0].Nodes[0].CreateAndConnectToSubnet("Profinet")
-              #subnet = n_interfaces[0].Nodes[0].CreateAndConnectToSubnet("PN/IE_1")
               ioSystem = n_interfaces[0].IoControllers[0].CreateIoSystem("PNIO")
           if n_interfaces.index(n) != 0:
               
               t = str(ipaddress.ip_address(add) + 256)
               n_interfaces[n_interfaces.index(n)].Nodes[0].SetAttribute('Address', t)
-            
               add = t
-            
-              #subnet = myproject.Subnets.Find("Profinet");
               subnet = ''
 
               for subnets in myproject.Subnets:
                   subnet = subnets
-
 
               try:
 
@@ -234,16 +187,6 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
               
               except Exception:
                   pass    
-
-
-      #
-      # # Compiling HW & SW
-      # 
-
-    
-    
-
-
 
       # Defining method to recursively print error messages
       def print_comp(messages):
@@ -263,7 +206,6 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
               _consoleArr.append(str(f'Warning Count: {msg.WarningCount}'))
               _consoleArr.append(str(f'Error Count: {msg.ErrorCount}\n'))
               _consoleArr.append(str(msg.Messages))
-
 
       try:
   
@@ -278,7 +220,6 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
               print(f'Error Count: {result.ErrorCount}')
               print_comp(result.Messages)   
 
-              
               _consoleArr.append(str(f'State: {result.State}'))
               _consoleArr.append(str(f'Warning Count: {result.WarningCount}'))
               _consoleArr.append(str(f'Error Count: {result.ErrorCount}'))
@@ -286,13 +227,6 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
 
       except Exception:
           pass       
-
-
-      #
-      # # Option to compile SW only
-      # 
-
-
 
       # Defining method to recursively print error messages
       def print_comp(messages):
@@ -305,7 +239,6 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
               print(f'Error Count: {msg.ErrorCount}\n')
               print_comp(msg.Messages)
 
-          
               _consoleArr.append(str(f'Path: {msg.Path}'))
               _consoleArr.append(str(f'DateTime: {msg.DateTime}'))
               _consoleArr.append(str(f'State: {msg.State}'))
@@ -316,7 +249,7 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
 
       try:
 
-              #compiling all sw in all devices
+          #compiling all devices
           for device in myproject.Devices:
               device_item_aggregation = device.DeviceItems
               for deviceitem in device_item_aggregation:   
@@ -335,8 +268,6 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
                           print(f'Error Count: {result.ErrorCount}')
                           print_comp(result.Messages)   
 
-                          
-
                           _consoleArr.append(str(f'State: {result.State}'))
                           _consoleArr.append(str(f'Warning Count: {result.WarningCount}'))
                           _consoleArr.append(str(f'Error Count: {result.ErrorCount}'))
@@ -345,84 +276,56 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
       except Exception:
           pass  
 
-
-      #myproject.Save()
-
-      #myproject.Close()
-
-      #mytia.Dispose()
-
-
-      # lohkojen luonti
+      # PLC
       deviceItem = myproject.Devices[0].DeviceItems[1]
       
-
+      # Software container
       software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
     
+      # Software
       software_base = software_container.Software
+
       print(str(deviceItem.Name))  
       print(str(software_base.Name))  
-
       _consoleArr.append(str(deviceItem.Name))  
       _consoleArr.append(str(software_base.Name))  
 
-
-      # global library
-      #availableLibraries = mytia.GlobalLibraries.GetGlobalLibraryInfos()
-
-      #for libInfo in availableLibraries:
-            #print(" Library Name: {0}", libInfo.Name)
-            #print(" Library Path: {0}", libInfo.Path)
-            #print(" Library Type: {0}", libInfo.LibraryType)
-            #print(" Library IsOpen: {0}", libInfo.IsOpen)
-        
-            #if libInfo.Name == "testLib":
-                    #libraryOpenedWithInfo = mytia.GlobalLibraries.Open(libInfo)
-                    #masterCopy = libraryOpenedWithInfo.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
-                    #libBlock = software_base.BlockGroup.Blocks.CreateFrom(masterCopy)
-      
-  
-
+      # The command opens the selected library
       userLib = mytia.GlobalLibraries.Open(FileInfo(libPath), tia.OpenMode.ReadWrite)
+      # Get 'SinaSpeedTest' block from library
       typesLib = userLib.TypeFolder.Types.Find("SinaSpeedTest")   
       typeVersion = typesLib.Versions[0]
-      #masterCopy = userLib.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
+      # Import 'SinaSpeedTest' block into the project.       
       libBlock = software_base.BlockGroup.Blocks.CreateFrom(typeVersion)
 
       _consoleArr.append("SinaSpeedTest")
 
-      #plc_block = software_base.BlockGroup.Blocks.Find("Drives")
-      #plc_block.Export(FileInfo('C:\\export\\tulos\\Drives.xml'), tia.ExportOptions.WithDefaults)
-      #plc_block0 = software_base.BlockGroup.Blocks.Find("sinaSpeed2_DB")
-      #plc_block0.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2_DB.xml'), tia.ExportOptions.WithDefaults)
-
-
-
-
       # DrivesData
-
-      tree = ET.parse('./xmltemplate/DrivesData.xml')
+      # Open the DrivesData.xml file
+      tree = ET.parse('./xml/DrivesData.xml')
       root = tree.getroot()
 
+      # For loop for iterating over 'SW.Blocks.GlobalDB' from the file.
       for item in root.findall('SW.Blocks.GlobalDB'):
           attributeList=item.find('AttributeList')
           Interface=attributeList.find('Interface')
           Sections=Interface.find('Sections')
           Section=Sections.find('Section')
 
-      
+          # List of device names.
           db_array = _name
           loopMax = len(_name)
 
+          # For loop for iterating over device names
           for i in range(loopMax):
               
-              # plc tags
+              # System constants
               plcTagTableSystemGroup = software_base.TagTableGroup
               constant1 = plcTagTableSystemGroup.TagTables[0].SystemConstants.Find(db_array[i]+"~PROFINET_interface~ModuleAccessPoint")
               constant2 = plcTagTableSystemGroup.TagTables[0].SystemConstants.Find(db_array[i]+"~PROFINET_interface~Standard_telegram_1")
 
 
-
+              # Add the XML structure below to the 'Section'.
               member = f"""
         <Member Name="{db_array[i]}" Datatype="&quot;typeSinaSpeedInterface&quot;" Remanence="NonRetain" Accessibility="Public">
               <AttributeList>
@@ -463,6 +366,7 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
               Section.insert(1, new_field)
 
 
+      # Write the file.
       tree.write("C:\\openness-app\\DrivesData.xml", encoding='unicode')
 
       with open("C:\\openness-app\\DrivesData.xml") as f:
@@ -481,40 +385,15 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
       with open("C:\\openness-app\\DrivesData.xml", "w") as f:
           f.writelines(lines)
 
-
       _consoleArr.append("DrivesData")
 
-
-      # EXPORT
-
-      #plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
+      # Import typeSinaSpeedInterface
       unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\\openness-app\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
-      #plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
-    
-      #for folder in directory:
-         #if folder[0] != "project":
-           # usergroup = software_base.BlockGroup.Groups.Create(folder[0])
-            #for file in folder:
-               #if file == "Drives":
-                  #usergroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override) 
-               #if file == "DrivesData":
-                  #usergroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override) 
-              # if "Inst" in file:
-                    #blockComposition = usergroup.Blocks
-                    #isAutoNumber = True
-                    #instanceOfName = "SinaSpeedTest"
-                   # number = 1
-                    #iDbBlock = blockComposition.CreateInstanceDB(file, isAutoNumber, number, instanceOfName)
-         #else:
-            
-            #plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
-           # plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
 
-
-
-     
-
-
+      # Function to convert the UI tree structure to be compatible with the Openness interface.
+      # 'array' is the current folder/file.
+      # If 'nest' is false, root folder; otherwise, not a root folder.
+      # 'usergroup' is a program block instance.
       def treeToOpenness(array, nest, usergroup):
         
           for node in array:
@@ -525,9 +404,9 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
                   for key in node.keys(): 
                       currentkey = key
 
-                  # create folder == currentkey
                   print("created: " + currentkey)   
-                  _consoleArr.append("create folder: " + currentkey) 
+                  _consoleArr.append("created folder: " + currentkey) 
+                  # check if root
                   if nest is False:
                       usergroup = software_base.BlockGroup.Groups.Create(currentkey)
                   else:
@@ -585,61 +464,38 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
       usergroup = 0        
       treeToOpenness(directory["Parent"]["children"], False, usergroup)
 
-
-
-      
       _consoleArr.append("export xml")
-
-
-      #unit = software_base.TypeGroup.Types.Find("typeSinaSpeedInterface")
-      #unit.Export(FileInfo('C:\\export\\tulos\\typeSinaSpeedInterface.xml'), tia.ExportOptions.WithDefaults)
-
-
-      #blockComposition = software_base.BlockGroup.Blocks
-      #isAutoNumber = True
-      #instanceOfName = "SinaSpeedTest"
-      #number = 1
-
-      # sinaSpeedTest
-      #index = 0
-      #for i in range(len(_name)):
-        #iDBName = f"Inst{_name[i]}"    
-        #iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number, instanceOfName)
-        #index = index + 1
-
-
       _consoleArr.append("CreateInstanceDB")
 
-
+      # Program block generation completed.
       print('Demo complete!')
       _consoleArr.append('Demo complete!')
 
+      # Dispose
       mytia.Dispose()
 
   except Exception as e:
      _consoleArr.append('An unexpected error has occurred. Please try again!!')
      _consoleArr.append('An exception occurred: {}'.format(e))
 
-
+# Write XML files to 'C:\openness-app'.
 def writeXML(_nameArr, counter):
 
     print('XML')
 
-        
     # path 
     path = 'C:\\openness-app'
         
     # Create the directory 
-    # 'GeeksForGeeks' in 
-    # '/home / User / Documents' 
     try: 
         os.mkdir(path) 
     except OSError as error: 
         print(error)  
 
-    tree = ET.parse('./xmltemplate/Drives.xml')
+    tree = ET.parse('./xml/Drives.xml')
     root = tree.getroot()
 
+    # ID
     def counterFunc():
         nonlocal  counter
         counter = len(_nameArr)+(counter+1)
@@ -651,7 +507,7 @@ def writeXML(_nameArr, counter):
         
         
         db_array = _nameArr
-        loop = (2 + len(db_array)) # default 2
+        loop = (2 + len(db_array))
         loopMax = len(_nameArr)
         index = int(len(_nameArr)-1)
         for i in range(loopMax):
@@ -725,10 +581,9 @@ def writeXML(_nameArr, counter):
           index = index - 1
 
 
+    # Drives
     tree.write("C:\\openness-app\\Drives.xml", encoding='unicode')
-    #tree.write("XMLtest.xml", encoding='unicode')
-
-
+  
     with open("C:\\openness-app\\Drives.xml") as f:
       lines = f.readlines()
 
@@ -748,7 +603,7 @@ def writeXML(_nameArr, counter):
 
 
     # sinaSpeedInterface
-    tree = ET.parse('./xmltemplate/typeSinaSpeedInterface.xml')
+    tree = ET.parse('./xml/typeSinaSpeedInterface.xml')
     tree.write("C:\\openness-app\\typeSinaSpeedInterface.xml", encoding='unicode')
 
     with open("C:\\openness-app\\typeSinaSpeedInterface.xml") as f:
@@ -780,8 +635,6 @@ def initProcess(_console, path, dllPath, interface, tia, project, dlist):
     _console.append('An exception occurred: {}'.format(e))
 
 def startProcess(_type, _name, _console, dllPath, libPath, tia, project, directory):
-   
-
   try:
 
     x = threading.Thread(target=async_func, args=(_type,_name,_console,dllPath,libPath,tia,project,directory,))
@@ -791,19 +644,23 @@ def startProcess(_type, _name, _console, dllPath, libPath, tia, project, directo
     _console.append('An unexpected error has occurred. Please try again!!')
     _console.append('An exception occurred: {}'.format(e))
 
-
-
-
-# EXCEL
-
-def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interface):  
-
+# EXCEL PAGE
+# The function is called when the 'Start TIA Portal' button is clicked
+# The purpose of the function is to generate program blocks in the project.
+# "_type" is a list of OrderNumbers.
+# "_name" is a list of device names.
+# "_path" is the project path.
+# "_consoleArr" parameter can be used to send logs to the ui console.
+# "dllPath" parameter is the path to "Siemens.Engineering.dll".
+# "libPath" is the path to the library.
+ # "If the "ui" parameter is true, TIA Portal starting "WithUserInterface"; otherwise, "WithoutUserInterface".
+def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):  
+  # Using try/except in case project allready exists
   try:
-
+      # If the path to the 'Siemens.Engineering.dll' is valid, Siemens libraries are imported.
       import clr
-      #clr.AddReference('C:\\Program Files\\Siemens\\Automation\\Portal V18\PublicAPI\\V18\\Siemens.Engineering.dll')
       clr.AddReference(dllPath)
-      from System.IO import DirectoryInfo, FileInfo
+      from System.IO import FileInfo
       import Siemens.Engineering as tia
       import Siemens.Engineering.HW.Features as hwf
       import Siemens.Engineering.SW.Units as units
@@ -811,63 +668,36 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
       import Siemens.Engineering.Library as lib
       import os
 
-      
+      # Add to the console.
       print("tiaportal")
       _consoleArr.append("tiaportal")
 
       mytia = ''
 
-      if interface is True:
+      # "If the "ui" parameter is true, TIA Portal starting "WithUserInterface"; otherwise, "WithoutUserInterface".
+      if ui is True:
         mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
       else:
         mytia = tia.TiaPortal(tia.TiaPortalMode.WithoutUserInterface)
 
-      processes = tia.TiaPortal.GetProcesses() # Making a list of all running processes
+      # Making a list of all running processes
+      processes = tia.TiaPortal.GetProcesses() 
       print (processes)
       _consoleArr.append("process: "+str(processes))
-      # Creating a new project. Using try/except in case project allready exists
-  
-      #project_path = DirectoryInfo ('C:\\Openness\\PKI')
-      
-  
+
       try:
         print(_path)
         _consoleArr.append("project path: "+_path)
-        #myproject = mytia.Projects.Create(project_path, project_name)
+        # "project_path" is now "_path"
         project_path = FileInfo (_path)
-        #global myproject
+        # "myproject" is now an instance of the project.
         myproject = mytia.Projects.OpenWithUpgrade(project_path)
-        #print(myproject)
       except Exception as e:
         print (e)
         _consoleArr.append(e)
         pass
 
-      #Adding the main components
-
-      #print ('Creating PLC1')
-      #PLC1_mlfb = 'OrderNumber:6ES7 513-1AL02-0AB0/V2.6'
-      #PLC1 = myproject.Devices.CreateWithItem(PLC1_mlfb, 'PLC1', 'PLC1')
-
-
-      #print ('Creating IOnode1')
-      #IOnode1_mlfb = 'OrderNumber:6ES7 155-6AU01-0BN0/V4.1'
-      #IOnode1 = myproject.Devices.CreateWithItem(IOnode1_mlfb, 'IOnode1', 'IOnode1')
-
-
-      #print ('Creating HMI1')
-      #HMI1_mlfb = 'OrderNumber:6AV2 124-0GC01-0AX0/15.1.0.0'
-      #HMI1 = myproject.Devices.CreateWithItem(HMI1_mlfb, 'HM1', None)
-
-      #ToDo Add start screen to avoid compilation error fo the HMI
-
-
-          #print ('Creating PN')
-          #print(str(_name.index(n)))
-          #PN_mlfb = 'OrderNumber:'+ str(_type.index(n));
-          #PN = myproject.Devices.CreateWithItem(PN_mlfb,  str(_name.index(n)), None)
-
-      # tsekataan onko yhtakaan laitetta olemassa jos ei ole niin luodaan PLC
+      # Check if any PLC exists, if not, create a new PLC 
       count = 0
       for device in myproject.Devices:
           count+=1
@@ -879,36 +709,23 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
           print ('Creating PLC1')
           _consoleArr.append('Creating PLC1')
           PLC1_mlfb = 'OrderNumber:6ES7 511-1AL03-0AB0/V3.0'
+          # creating a new PLC  
           PLC1 = myproject.Devices.CreateWithItem(PLC1_mlfb, 'PLC1', 'PLC1')
     
 
-      # display indices in the list
+      # For loop for iterating over the added devices
       for i in range(len(_type)):
           print(i, _type[i])
           _consoleArr.append(str(_type[i]))
           print(i, _name[i])
           _consoleArr.append(str(_name[i]))
           PN_mlfb = 'OrderNumber:'+ str(_type[i])
+          # Creating a new device in the TIA Portal project.
           PN = myproject.Devices.CreateWithItem(PN_mlfb,  str(_name[i]), None)
 
       # Adding IO cards to the PLC and IO station
       # This is basic to show how it works, use loops with checks (CanPlugNew) to see if the slot is available
-      # CanPlugnew is not mandatory, but usefull in real code
-
-      #if (PLC1.DeviceItems[0].CanPlugNew('OrderNumber:6ES7 521-1BL00-0AB0/V2.1','IO1',2)): 
-        # PLC1.DeviceItems[0].PlugNew('OrderNumber:6ES7 521-1BL00-0AB0/V2.1','IO1', 2)
-
-          
-      #if (IOnode1.DeviceItems[0].CanPlugNew('OrderNumber:6ES7 131-6BH01-0BA0/V0.0','IO1',1)):
-        # IOnode1.DeviceItems[0].PlugNew('OrderNumber:6ES7 131-6BH01-0BA0/V0.0','IO1', 1)
-
-
-
-      #
-      # # Creating network, iosytem and setting IP adresses
-      # 
-
-    
+      #  Creating network, iosytem and setting IP adresses
       #creating a list of all found network interfaces on all stations in the station list
       n_interfaces = []
       for device in myproject.Devices:
@@ -920,36 +737,19 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
                   print(str(device.Name)+': '+str(info.Name))
                   _consoleArr.append(str(device.Name)+': '+str(info.Name))
               
-          
           device_item_aggregation = device.DeviceItems[1].DeviceItems
           for deviceitem in device_item_aggregation:
               network_service = tia.IEngineeringServiceProvider(deviceitem).GetService[hwf.NetworkInterface]()
               if type(network_service) is hwf.NetworkInterface:
                   n_interfaces.append(network_service)
 
-
-
-
-      # Assigning an IP to each item in the list (dirty code, but to demonstrate how theAPI works)
-
-      #n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
-    # n_interfaces[1].Nodes[0].SetAttribute('Address','192.168.0.131')
-    # n_interfaces[2].Nodes[0].SetAttribute('Address','192.168.0.132')
-      #n_interfaces[len(n_interfaces)-1].Nodes[0].SetAttribute('Address','140.80.0.204')
-      #n_interfaces[0].Nodes[0].SetAttribute('Address','140.80.0.200')
-      #n_interfaces[1].Nodes[0].SetAttribute('Address','140.80.0.202')
-      #n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
-
+      # Assigning an IP to each item in the list
       if count == 0:
           n_interfaces[0].Nodes[0].SetAttribute('Address','192.168.0.130')
 
-      
       add = n_interfaces[0].Nodes[0].GetAttribute('Address')
-      
       print(add)
       _consoleArr.append("IP Address: "+str(add))
-
-      #n_interfaces[1].Nodes[0].SetAttribute('Address', a)
 
       # Creating subnet and IO system on the first item in the list
       # Connects to subnet for remaining devices, if IO device it gets assigned to the IO system
@@ -957,16 +757,12 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
           if count == 0:
               count = 1
               subnet = n_interfaces[0].Nodes[0].CreateAndConnectToSubnet("Profinet")
-              #subnet = n_interfaces[0].Nodes[0].CreateAndConnectToSubnet("PN/IE_1")
               ioSystem = n_interfaces[0].IoControllers[0].CreateIoSystem("PNIO")
           if n_interfaces.index(n) != 0:
               
               t = str(ipaddress.ip_address(add) + 256)
               n_interfaces[n_interfaces.index(n)].Nodes[0].SetAttribute('Address', t)
-            
               add = t
-            
-              #subnet = myproject.Subnets.Find("Profinet");
               subnet = ''
 
               for subnets in myproject.Subnets:
@@ -982,16 +778,6 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
               
               except Exception:
                   pass    
-
-
-      #
-      # # Compiling HW & SW
-      # 
-
-    
-    
-
-
 
       # Defining method to recursively print error messages
       def print_comp(messages):
@@ -1026,7 +812,6 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
               print(f'Error Count: {result.ErrorCount}')
               print_comp(result.Messages)   
 
-              
               _consoleArr.append(str(f'State: {result.State}'))
               _consoleArr.append(str(f'Warning Count: {result.WarningCount}'))
               _consoleArr.append(str(f'Error Count: {result.ErrorCount}'))
@@ -1034,13 +819,6 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
 
       except Exception:
           pass       
-
-
-      #
-      # # Option to compile SW only
-      # 
-
-
 
       # Defining method to recursively print error messages
       def print_comp(messages):
@@ -1053,7 +831,6 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
               print(f'Error Count: {msg.ErrorCount}\n')
               print_comp(msg.Messages)
 
-          
               _consoleArr.append(str(f'Path: {msg.Path}'))
               _consoleArr.append(str(f'DateTime: {msg.DateTime}'))
               _consoleArr.append(str(f'State: {msg.State}'))
@@ -1083,8 +860,6 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
                           print(f'Error Count: {result.ErrorCount}')
                           print_comp(result.Messages)   
 
-                          
-
                           _consoleArr.append(str(f'State: {result.State}'))
                           _consoleArr.append(str(f'Warning Count: {result.WarningCount}'))
                           _consoleArr.append(str(f'Error Count: {result.ErrorCount}'))
@@ -1093,18 +868,9 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
       except Exception:
           pass  
 
-
-      #myproject.Save()
-
-      #myproject.Close()
-
-      #mytia.Dispose()
-
-
-      # lohkojen luonti
+    
       deviceItem = myproject.Devices[0].DeviceItems[1]
-      
-
+    
       software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
     
       software_base = software_container.Software
@@ -1115,41 +881,16 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
       _consoleArr.append(str(software_base.Name))  
 
 
-      # global library
-      #availableLibraries = mytia.GlobalLibraries.GetGlobalLibraryInfos()
-
-      #for libInfo in availableLibraries:
-            #print(" Library Name: {0}", libInfo.Name)
-            #print(" Library Path: {0}", libInfo.Path)
-            #print(" Library Type: {0}", libInfo.LibraryType)
-            #print(" Library IsOpen: {0}", libInfo.IsOpen)
-        
-            #if libInfo.Name == "testLib":
-                    #libraryOpenedWithInfo = mytia.GlobalLibraries.Open(libInfo)
-                    #masterCopy = libraryOpenedWithInfo.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
-                    #libBlock = software_base.BlockGroup.Blocks.CreateFrom(masterCopy)
-      
-  
-
       userLib = mytia.GlobalLibraries.Open(FileInfo(libPath), tia.OpenMode.ReadWrite)
       typesLib = userLib.TypeFolder.Types.Find("SinaSpeedTest")   
-      typeVersion = typesLib.Versions[0]
-      #masterCopy = userLib.MasterCopyFolder.MasterCopies.Find("SinaSpeedTest")               
+      typeVersion = typesLib.Versions[0]         
       libBlock = software_base.BlockGroup.Blocks.CreateFrom(typeVersion)
 
       _consoleArr.append("SinaSpeedTest")
 
-      #plc_block = software_base.BlockGroup.Blocks.Find("Drives")
-      #plc_block.Export(FileInfo('C:\\export\\tulos\\Drives.xml'), tia.ExportOptions.WithDefaults)
-      #plc_block0 = software_base.BlockGroup.Blocks.Find("sinaSpeed2_DB")
-      #plc_block0.Export(FileInfo('C:\\export\\tulos\\sinaSpeed2_DB.xml'), tia.ExportOptions.WithDefaults)
-
-
-
-
       # DrivesData
 
-      tree = ET.parse('./xmltemplate/DrivesData.xml')
+      tree = ET.parse('./xml/DrivesData.xml')
       root = tree.getroot()
 
       for item in root.findall('SW.Blocks.GlobalDB'):
@@ -1232,20 +973,11 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, interfac
 
       _consoleArr.append("DrivesData")
 
-
-      # EXPORT
-
       plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
       unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\\openness-app\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
       plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
     
-      
       _consoleArr.append("export xml")
-
-
-      #unit = software_base.TypeGroup.Types.Find("typeSinaSpeedInterface")
-      #unit.Export(FileInfo('C:\\export\\tulos\\typeSinaSpeedInterface.xml'), tia.ExportOptions.WithDefaults)
-
 
       blockComposition = software_base.BlockGroup.Blocks
       isAutoNumber = True

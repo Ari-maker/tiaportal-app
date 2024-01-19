@@ -8,25 +8,7 @@ import json
 from treelib import Node, Tree
 app = Flask(__name__)
 
-  
-#from openness import startTiaPortal
-#startTiaPortal()
-#from openness import startProcess
 from tkinter.filedialog import askopenfilename
-
-
-#_type = '6SL3210-1KE11-8AF2/4.7.13';
-#_name = 'Device_1';
-
-#tree = Tree()
-#tree.create_node("Harry", "harry")  # root node
-#tree.create_node("Jane", "jane", parent="harry")
-#tree.create_node("Bill", "bill", parent="harry")
-#tree.create_node("Diane", "diane", parent="jane")
-#tree.create_node("Mary", "mary", parent="diane")
-#tree.create_node("Mark", "mark", parent="jane")
-#tree.show()
-
 
 _typeArr = []
 _nameArr = []
@@ -162,13 +144,9 @@ def add():
 def index(): 
     # resetoidaan
     global myproject
-    #myproject = ''
     global mypath 
-    #mypath = ''
     global _typeArr
-    #_typeArr = []
     global _nameArr
-    #_nameArr = []
     global interface
     interface = True
    
@@ -287,7 +265,6 @@ def initTia():
     from openness import startProcess
     startProcess(_typeArr, _nameArr, _consoleArr, dllpath, libpath, tia[0], project[0], directory)
 
-    #return redirect('/')
     return render_template("device.html")
 
 
@@ -321,15 +298,9 @@ def tiaportal():
     
     getXML()
 
-    #from openness import startProcess
-    #startProcess(_typeArr, _nameArr, mypath, _consoleArr, dllpath, libpath, tia)
-
-
     from openness import initProcess
     initProcess(_consoleArr, mypath,dllpath,interface, tia, project, dlist)
      
-    #return redirect('/')
-
     if len(tia) != 0:
         return jsonify({'tia':1, 'dlist':dlist})
 
@@ -567,7 +538,5 @@ def consoleData():
     
 
 if __name__ == "__main__":
-    #app.run(debug=True)
-    #ui.run()
     FlaskUI(app=app, width=1280 , height=800, server="flask").run()
-     #ui = FlaskUI(app, width=500, height=500) # add app and parameters
+ 
