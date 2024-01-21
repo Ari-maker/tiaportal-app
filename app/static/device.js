@@ -1,10 +1,10 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
    $.ajax({
       type: 'GET',
       url: '/getDevices/',
-      success: function(response) {
-         
+      success: function (response) {
+
          if (response.name.length <= 0)
             return;
 
@@ -13,281 +13,229 @@ $(document).ready(function() {
 
          const laskuri = document.getElementsByClassName("laskuri");
          const panel = document.getElementsByClassName("panel panel-primary");
- 
+
          let myHTML = '';
-       
+
          for (let i = 0; i < typeArr.length; i++) {
-          
-           myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="../static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
-           myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
- 
+
+            myHTML += '<div class="panel-heading">' + nameArr[i] + '<img id=' + nameArr[i] + ' src="../static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
+            myHTML += '<div class="panel-body">' + typeArr[i] + '</div>';
+
          }
-       
+
          panel[0].innerHTML = myHTML
 
-         laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
+         laskuri[0].innerHTML = '<h4>Added devices (' + typeArr.length + ')</h4>';
 
       }
    });
 
-    $('#tiaportal').submit(function(event) {
-       event.preventDefault();
-       $("#myModal2").modal();
-       $.ajax({
-          type: 'POST',
-          url: '/tiaportal/',
-          data: $('#tiaportal').serialize(),
-          success: function(response) {
-             $('#type').val('');
-             $('#name').val('');
-      
-             //alert('Starting TIA Portal!');
-          
-            
-          }
-          ,
+   $('#tiaportal').submit(function (event) {
+      event.preventDefault();
+      $("#myModal2").modal();
+      $.ajax({
+         type: 'POST',
+         url: '/tiaportal/',
+         data: $('#tiaportal').serialize(),
+         success: function (response) {
+            $('#type').val('');
+            $('#name').val('');
+
+         }
+         ,
          error: function (xhr, ajaxOptions, thrownError) {
-             document.getElementById('error').innerHTML = "There must be at least one device. Project path missing?";
-             document.getElementById('error-message').style.display = "block";
-       }
-       });
-    });
- 
-    $('#initPortal').submit(function(event) {
+            document.getElementById('error').innerHTML = "There must be at least one device. Project path missing?";
+            document.getElementById('error-message').style.display = "block";
+         }
+      });
+   });
+
+   $('#initPortal').submit(function (event) {
       event.preventDefault();
       $("#myModal").modal();
       $.ajax({
          type: 'POST',
          url: '/initPortal/',
          data: $('#initPortal').serialize(),
-         success: function(response) {
+         success: function (response) {
             $('#type').val('');
             $('#name').val('');
-     
-            //alert('Starting TIA Portal!');
-            if (response.tia == 1)
-            {
-              document.getElementById('device-button').removeAttribute("disabled");
-              document.getElementById('compile-button').removeAttribute("disabled");
 
-              const wrapper = document.getElementsByClassName("list-group");
+            if (response.tia == 1) {
+               document.getElementById('device-button').removeAttribute("disabled");
+               document.getElementById('compile-button').removeAttribute("disabled");
 
-              let myHTML = '';
+               const wrapper = document.getElementsByClassName("list-group");
 
-              let arr = response.dlist;
-            
-              for (let i = 0; i < arr.length; i++) {
-               
-                myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
-          
-              }
-            
-              wrapper[0].innerHTML = myHTML
+               let myHTML = '';
+
+               let arr = response.dlist;
+
+               for (let i = 0; i < arr.length; i++) {
+
+                  myHTML += '<a type="button" onClick="addList(\'' + arr[i] + '\')" class="list-group-item">' + arr[i] + '</a>';
+
+               }
+
+               wrapper[0].innerHTML = myHTML
 
             }
-           
+
          }
          ,
-        error: function (xhr, ajaxOptions, thrownError) {
+         error: function (xhr, ajaxOptions, thrownError) {
             document.getElementById('error').innerHTML = "There must be at least one device. Project path missing?";
             document.getElementById('error-message').style.display = "block";
-      }
+         }
       });
    });
-   
-    $.ajax({
-       type: 'GET',
-        url: '/load/',
-       success: function(response) {
-          $('#project').val(response.project);
-          $('#dll').val(response.dll);
-          $('#lib').val(response.lib);
-        }
- 
-    });
 
-    $.ajax({
+   $.ajax({
       type: 'GET',
-       url: '/tia/',
-      success: function(response) {
-   
-         if (response.tia == 1)
-         {
-           document.getElementById('device-button').removeAttribute("disabled");
-           document.getElementById('compile-button').removeAttribute("disabled");
-
-           const wrapper = document.getElementsByClassName("list-group");
-
-           let myHTML = '';
-
-           let arr = response.dlist;
-         
-           for (let i = 0; i < arr.length; i++) {
-            
-             myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
-       
-           }
-         
-           wrapper[0].innerHTML = myHTML
-         }
-       }
+      url: '/load/',
+      success: function (response) {
+         $('#project').val(response.project);
+         $('#dll').val(response.dll);
+         $('#lib').val(response.lib);
+      }
 
    });
- 
- });
 
- /*
- $.getJSON('../static/data.json', function(data) {
-    console.log(JSON.stringify(data.devices));
+   $.ajax({
+      type: 'GET',
+      url: '/tia/',
+      success: function (response) {
 
-    let arr = data.devices;
+         if (response.tia == 1) {
+            document.getElementById('device-button').removeAttribute("disabled");
+            document.getElementById('compile-button').removeAttribute("disabled");
 
-    const wrapper = document.getElementsByClassName("list-group");
+            const wrapper = document.getElementsByClassName("list-group");
 
-    let myHTML = '';
-  
-    for (let i = 0; i < arr.length; i++) {
-     
-      myHTML += '<a type="button" onClick="addList(\''+arr[i]+'\')" class="list-group-item">'+arr[i]+'</a>';
+            let myHTML = '';
 
-    }
-  
-    wrapper[0].innerHTML = myHTML
-  
-});
-*/
+            let arr = response.dlist;
 
-function add() {   
-    $.ajax({
-             type: 'POST',
-             url: '/addDevice/',
-             data: $('#tiaportal').serialize(),
-             success: function(response) {
-                $('#type').val('');
-                $('#name').val('');
-            
-                //location.reload();
-                window.location.href = "/device";
-             }
-          });
-       }  
-    
-    
+            for (let i = 0; i < arr.length; i++) {
 
-function addList(value) {   
-    $('#type').val(value);
-}  
+               myHTML += '<a type="button" onClick="addList(\'' + arr[i] + '\')" class="list-group-item">' + arr[i] + '</a>';
 
-function openproject() {   
-  $.ajax({
-     type: 'GET',
-     url: '/openproject/',
-     success: function(response) {
-        $('#project').val(response.project);
-     }
-  });
-}  
+            }
 
-function selectDLL() {   
-  $.ajax({
-     type: 'GET',
-     url: '/selectdll/',
-     success: function(response) {
-        $('#dll').val(response.dll);
-     }
-  });
-}  
+            wrapper[0].innerHTML = myHTML
+         }
+      }
 
-function selectLib() {   
-  $.ajax({
-     type: 'GET',
-     url: '/selectlib/',
-     success: function(response) {
-        $('#lib').val(response.lib);
-     }
-  });
-}  
-
-
-
-
-function save(){
-
-  let project = $('#project').val();
-  let dll = $('#dll').val();
-  let lib = $('#lib').val();
-
- 
-  let obj = {
-     project: project,
-     dll: dll,
-     lib: lib
- };
-
-
- $.ajax({
- type: 'POST',
- url: '/saveFile/',
- data: obj,
- success: function(response) {
-     console.log(response.data);
-  }
+   });
 
 });
+
+function add() {
+   $.ajax({
+      type: 'POST',
+      url: '/addDevice/',
+      data: $('#tiaportal').serialize(),
+      success: function (response) {
+         $('#type').val('');
+         $('#name').val('');
+
+         window.location.href = "/device";
+      }
+   });
+}
+
+
+
+function addList(value) {
+   $('#type').val(value);
+}
+
+function openproject() {
+   $.ajax({
+      type: 'GET',
+      url: '/openproject/',
+      success: function (response) {
+         $('#project').val(response.project);
+      }
+   });
+}
+
+function selectDLL() {
+   $.ajax({
+      type: 'GET',
+      url: '/selectdll/',
+      success: function (response) {
+         $('#dll').val(response.dll);
+      }
+   });
+}
+
+function selectLib() {
+   $.ajax({
+      type: 'GET',
+      url: '/selectlib/',
+      success: function (response) {
+         $('#lib').val(response.lib);
+      }
+   });
+}
+
+
+
+
+function save() {
+
+   let project = $('#project').val();
+   let dll = $('#dll').val();
+   let lib = $('#lib').val();
+
+
+   let obj = {
+      project: project,
+      dll: dll,
+      lib: lib
+   };
+
+
+   $.ajax({
+      type: 'POST',
+      url: '/saveFile/',
+      data: obj,
+      success: function (response) {
+         console.log(response.data);
+      }
+
+   });
 
 }
 
 
 
 
-function change(){
+function change() {
 
-  $.ajax({
-     type: 'GET',
-     url: '/interface/',
-     success: function(response) {
-     }
-  });
+   $.ajax({
+      type: 'GET',
+      url: '/interface/',
+      success: function (response) {
+      }
+   });
 }
 
-function select(name){
-  console.log(name);
+function select(name) {
+   console.log(name);
 
-  $.ajax({
-     type: 'POST',
-     url: '/delete/',
-     data: {"name":name},
-     success: function(response) {
+   $.ajax({
+      type: 'POST',
+      url: '/delete/',
+      data: { "name": name },
+      success: function (response) {
 
-      window.location.href = "/device";
+         window.location.href = "/device";
 
-      /*
-        let typeArr = response.type;
-        let nameArr = response.name;
+      }
 
-        const laskuri = document.getElementsByClassName("laskuri");
-        const panel = document.getElementsByClassName("panel panel-primary");
-
-        let myHTML = '';
-      
-        for (let i = 0; i < typeArr.length; i++) {
-         
-          myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
-          myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
-
-        }
-
-        if(typeArr.length == 0) {
-           myHTML += '<div class="panel-body">Empty list!</div>';
-        }
-      
-        panel[0].innerHTML = myHTML
-
-        laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
-        */
-     }
-
-  });
+   });
 
 
 }
@@ -307,8 +255,8 @@ function addDirectory() {
       type: 'POST',
       url: '/addDirectory/',
       data: obj,
-      success: function(response) {
-      
+      success: function (response) {
+
          window.location.href = "/device";
 
       }

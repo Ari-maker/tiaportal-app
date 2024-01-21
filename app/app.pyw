@@ -1,48 +1,37 @@
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flaskwebgui import FlaskUI # import FlaskUI
-from email.mime.text import MIMEText
-import smtplib
-from email.message import EmailMessage
 import openpyxl
 import json
 from treelib import Node, Tree
 app = Flask(__name__)
-
 from tkinter.filedialog import askopenfilename
 
-_typeArr = []
-_nameArr = []
-_consoleArr = []
+_typeArr = [] # Array of OrderNumbers
+_nameArr = [] # Array of device names
+_consoleArr = [] # console
 
-myproject = ''
+myproject = '' # project instance
+mypath = '' # project path
+counter = 2 # counter
+dllpath = '' # path to 'Siemens.Engineering.dll'
+libpath = '' # path to library
+interface = True # TIA UI
+tia = [] # TIA instance
+project = [] # project instance
+dlist = [] # device list
 
-mypath = ''
-
-counter = 2 # 3
-
-dllpath = ''
-
-libpath = ''
-
-interface = True
-
-tia = []
-project = []
-dlist = []
-
+# project tree
 tree = Tree()
-
 tree.create_node("Parent", "Parent")  # root node
-tree.create_node("DrivesData [DB]", "DrivesData [DB]", parent="Parent")
-tree.create_node("Drives [OB]", "Drives [OB]", parent="Parent")
+tree.create_node("DrivesData [DB]", "DrivesData [DB]", parent="Parent") # DrivesData
+tree.create_node("Drives [OB]", "Drives [OB]", parent="Parent") # Drives
 
-  
+# opens file explorer  
 @app.route("/openproject/", methods=["GET"])
 def openproject():
     print('project path')
     global mypath
     mypath = askopenfilename(filetypes=(("Project file", "*.ap18"),("All files", "*.*") ))
-
 
     return jsonify({'project':mypath})
 
@@ -56,7 +45,7 @@ def selectdll():
 
     return jsonify({'dll':dllpath})
 
-
+# opens file explorer 
 @app.route("/selectlib/", methods=["GET"])
 def selectlib():
     print('lib path')
@@ -66,7 +55,7 @@ def selectlib():
 
     return jsonify({'lib':libpath})
 
-
+# delete device
 @app.route("/delete/", methods=["POST"])
 def delete():
  
@@ -82,7 +71,7 @@ def delete():
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
 
-
+# load paths
 @app.route("/load/")
 def load():
 
@@ -102,11 +91,12 @@ def load():
    
     return jsonify({'project':mypath, 'dll':dllpath,'lib':libpath})
 
-
+# get devices
 @app.route("/getDevices/")
 def getDevices():
         return jsonify({'type':_typeArr, 'name':_nameArr})
 
+# add device
 @app.route("/addDevice/", methods=["POST"])
 def add():
 
@@ -139,10 +129,10 @@ def add():
     return jsonify({'type':_typeArr, 'name':_nameArr})
  
  
-
+# root
 @app.route("/")
 def index(): 
-    # resetoidaan
+ 
     global myproject
     global mypath 
     global _typeArr
@@ -150,9 +140,9 @@ def index():
     global interface
     interface = True
    
-
     return render_template("index.html")
 
+# write xml
 def getXML():
 
     print('XML')
@@ -165,18 +155,14 @@ def getXML():
 
     return render_template("index.html")
 
-
+# add folder/file
 @app.route("/add")
 def addFunc():
 
     name = request.args.get('name')
 
-
-
     parentArr = json.loads(tree.to_json(with_data=False))
 
-
-    
     def treeToHtml(array, content, nest):
       
         for node in array:
@@ -217,7 +203,7 @@ def addFunc():
 
     return render_template('device.html', mylist=html)
 
-
+# get device list
 @app.route("/tia/")
 def tiafunc():
     if len(tia) != 0:
@@ -267,7 +253,7 @@ def initTia():
 
     return render_template("device.html")
 
-
+# starting tia portal
 @app.route("/initPortal/", methods=["POST"])
 def tiaportal():
     
@@ -306,10 +292,12 @@ def tiaportal():
 
     return jsonify({'tia':0})
 
+# get console
 @app.route("/console/")
 def console():
      return render_template("console.html")
 
+# get devices
 @app.route("/device/")
 def device():
 
@@ -357,7 +345,7 @@ def device():
     return render_template('device.html', mylist=html)
 
 
-
+# starting tia portal (excel)
 @app.route("/tiaportalExcel/", methods=["POST"])
 def tiaportalExcel():
     
@@ -397,7 +385,7 @@ def tiaportalExcel():
 
     return render_template("index.html")
 
-
+# importing excel file
 @app.route("/importExcel/")
 def importExcel():
 
@@ -453,7 +441,7 @@ def importExcel():
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
 
-
+#Starting TIA with UI, also possible to start without ui
 @app.route("/interface/")
 def interfaceUser():
 
@@ -466,7 +454,7 @@ def interfaceUser():
 
     return jsonify({'interface':str(interface)})
 
-
+# remove directory
 @app.route("/removeDirectory/", methods=["POST"])
 def removeDir():
     _dir = request.form['folder']
@@ -475,7 +463,7 @@ def removeDir():
 
     return render_template('index.html') 
 
-
+# add directory
 @app.route("/addDirectory/", methods=["POST"])
 def addDir():
     _dir = request.form['foldername']
@@ -483,7 +471,7 @@ def addDir():
 
     return render_template('device.html') 
 
-
+# move file another directory
 @app.route("/updateFile/", methods=["POST"])
 def updateDIR():
         _folder = request.form['folder']
@@ -503,8 +491,7 @@ def updateDIR():
 
         return render_template('device.html') 
 
-
-
+# save paths
 @app.route("/saveFile/", methods=["POST"])
 def saveFile():
     _project = request.form['project']
@@ -526,7 +513,7 @@ def saveFile():
 
     return jsonify({'file':str(filedata)})  
 
-
+# get console data
 @app.route("/getConsoleData/")
 def consoleData():
    
@@ -536,7 +523,7 @@ def consoleData():
 
      return jsonify({'consoleArr':str(_consoleArr)})
     
-
+# starting app
 if __name__ == "__main__":
     FlaskUI(app=app, width=1280 , height=800, server="flask").run()
  

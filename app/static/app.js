@@ -1,72 +1,67 @@
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-   $('#tiaportal').submit(function(event) {
+   $('#tiaportal').submit(function (event) {
       event.preventDefault();
       $.ajax({
          type: 'POST',
          url: '/tiaportalExcel/',
          data: $('#tiaportal').serialize(),
-         success: function() {
+         success: function () {
             $('#type').val('');
             $('#name').val('');
-     
-            //alert('Starting TIA Portal!');
             $("#myModal").modal();
-           
+
          }
          ,
-        error: function (xhr, ajaxOptions, thrownError) {
+         error: function (xhr, ajaxOptions, thrownError) {
             document.getElementById('error').innerHTML = "There must be at least one device. Project path missing?";
             document.getElementById('error-message').style.display = "block";
-      }
+         }
       });
    });
 
 });
 
+function importExcel() {
+
+   $.ajax({
+      type: 'GET',
+      url: '/importExcel/',
+      success: function (response) {
+         $('#type').val('');
+         $('#name').val('');
 
 
-    function importExcel() {
+         let typeArr = response.type;
+         let nameArr = response.name;
 
-      $.ajax({
-         type: 'GET',
-         url: '/importExcel/',
-         success: function(response) {
-            $('#type').val('');
-            $('#name').val('');
-        
+         const laskuri = document.getElementsByClassName("laskuri");
+         const panel = document.getElementsByClassName("panel panel-primary");
 
-            let typeArr = response.type;
-            let nameArr = response.name;
+         let myHTML = '';
 
-            const laskuri = document.getElementsByClassName("laskuri");
-            const panel = document.getElementsByClassName("panel panel-primary");
-    
-            let myHTML = '';
-          
-            for (let i = 0; i < typeArr.length; i++) {
-             
-              myHTML += '<div class="panel-heading">'+nameArr[i]+'<img id='+nameArr[i]+' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
-              myHTML += '<div class="panel-body">'+typeArr[i]+'</div>';
-    
-            }
-          
-            panel[0].innerHTML = myHTML
+         for (let i = 0; i < typeArr.length; i++) {
 
-            laskuri[0].innerHTML = '<h4>Added devices ('+typeArr.length+')</h4>';
+            myHTML += '<div class="panel-heading">' + nameArr[i] + '<img id=' + nameArr[i] + ' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
+            myHTML += '<div class="panel-body">' + typeArr[i] + '</div>';
+
          }
-      });
 
-    }
+         panel[0].innerHTML = myHTML
 
-   
-    function change(){
+         laskuri[0].innerHTML = '<h4>Added devices (' + typeArr.length + ')</h4>';
+      }
+   });
 
-      $.ajax({
-         type: 'GET',
-         url: '/interface/',
-         success: function(response) {
-         }
-      });
-    }
+}
+
+function change() {
+
+   $.ajax({
+      type: 'GET',
+      url: '/interface/',
+      success: function (response) {
+      }
+   });
+}

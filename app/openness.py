@@ -31,7 +31,7 @@ def init_func(_console, _path, dllPath, ui, tiaportal, project, dlist):
       print("tiaportal")
       _console.append("tiaportal")
 
-      # "If the "ui" parameter is true, TIA Portal starting "WithUserInterface"; otherwise, "WithoutUserInterface".
+      # Starting TIA with UI, also possible to start without ui
       if ui is True:
         mytia = tia.TiaPortal(tia.TiaPortalMode.WithUserInterface)
       else:
@@ -52,7 +52,7 @@ def init_func(_console, _path, dllPath, ui, tiaportal, project, dlist):
            d = deviceList.TypeIdentifier
            d = d.replace("OrderNumber:", "")
            print(d)
-           # Add the device to the 'dlist' list.
+           # Adding device to the 'dlist' list.
            dlist.append(d)
 
         # Add to the console.
@@ -62,6 +62,7 @@ def init_func(_console, _path, dllPath, ui, tiaportal, project, dlist):
         # "project_path" is now "_path"
         project_path = FileInfo (_path)
         # "myproject" is now an instance of the project.
+        # openning project
         myproject = mytia.Projects.OpenWithUpgrade(project_path)
         # "project" parameter is now "myproject"
         project.append(myproject)
@@ -423,13 +424,15 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
                           if file == "Drives [OB]":
                               print("_Drives")
                               _consoleArr.append("Drives") 
-                              # import Drives
+                              # Importing Drives
+                              # Importing the xml files back in to the project
                               usergroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override) 
 
                           if file == "DrivesData [DB]":
                               print("_DrivesData")
                               _consoleArr.append("DrivesData") 
-                              # import DrivesData
+                              # Importing DrivesData
+                              # Importing the xml files back in to the project
                               usergroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override) 
                           if "Inst" in file:
                               blockComposition = usergroup.Blocks
@@ -445,14 +448,17 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
                   if node == "Drives [OB]":
                       print("Drives")
                       _consoleArr.append("Drives") 
-                      # import Drives
+                      # Importing Drives
+                      # Importing the xml files back in to the project
                       plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
                   if node == "DrivesData [DB]":
                       print("DrivesData")
                       _consoleArr.append("DrivesData") 
-                      # import DrivesData
+                      # Importing DrivesData
+                      # Importing the xml files back in to the project
                       plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
                   if "Inst" in node:
+                      # CreateInstanceDB
                       blockComposition = software_base.BlockGroup.Blocks
                       isAutoNumber = True
                       instanceOfName = "SinaSpeedTest"
@@ -467,7 +473,7 @@ def async_func(_type, _name, _consoleArr, dllPath, libPath, mytia, myproject, di
       _consoleArr.append("export xml")
       _consoleArr.append("CreateInstanceDB")
 
-      # Program block generation completed.
+      # Demo completed.
       print('Demo complete!')
       _consoleArr.append('Demo complete!')
 
@@ -593,6 +599,7 @@ def writeXML(_nameArr, counter):
     index = 0
     for toisto in lines:
         if lines[index].find('linkki'):
+          # replace 'linkki' to 'http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4'
           lines[index] = lines[index].replace('linkki', 'xmlns')
           index = index + 1
 
@@ -652,7 +659,7 @@ def startProcess(_type, _name, _console, dllPath, libPath, tia, project, directo
 # "_path" is the project path.
 # "_consoleArr" parameter can be used to send logs to the ui console.
 # "dllPath" parameter is the path to "Siemens.Engineering.dll".
-# "libPath" is the path to the library.
+# "libPath" is the path to library.
  # "If the "ui" parameter is true, TIA Portal starting "WithUserInterface"; otherwise, "WithoutUserInterface".
 def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):  
   # Using try/except in case project allready exists
@@ -690,7 +697,8 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):
         _consoleArr.append("project path: "+_path)
         # "project_path" is now "_path"
         project_path = FileInfo (_path)
-        # "myproject" is now an instance of the project.
+        # "myproject" is now an instance of project.
+        # openning project
         myproject = mytia.Projects.OpenWithUpgrade(project_path)
       except Exception as e:
         print (e)
@@ -725,8 +733,8 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):
 
       # Adding IO cards to the PLC and IO station
       # This is basic to show how it works, use loops with checks (CanPlugNew) to see if the slot is available
-      #  Creating network, iosytem and setting IP adresses
-      #creating a list of all found network interfaces on all stations in the station list
+      # Creating network, iosytem and setting IP adresses
+      # creating a list of all found network interfaces on all stations in the station list
       n_interfaces = []
       for device in myproject.Devices:
           
@@ -868,50 +876,54 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):
       except Exception:
           pass  
 
-    
+      # PLC
       deviceItem = myproject.Devices[0].DeviceItems[1]
     
+      # Software container
       software_container = tia.IEngineeringServiceProvider(deviceItem).GetService[hwf.SoftwareContainer]()
     
+      # Software
       software_base = software_container.Software
-      print(str(deviceItem.Name))  
-      print(str(software_base.Name))  
 
+      print(str(deviceItem.Name))  
+      print(str(software_base.Name)) 
       _consoleArr.append(str(deviceItem.Name))  
       _consoleArr.append(str(software_base.Name))  
 
-
+      # The command opens the selected library
       userLib = mytia.GlobalLibraries.Open(FileInfo(libPath), tia.OpenMode.ReadWrite)
       typesLib = userLib.TypeFolder.Types.Find("SinaSpeedTest")   
-      typeVersion = typesLib.Versions[0]         
+      typeVersion = typesLib.Versions[0]   
+      # Importing 'SinaSpeedTest'      
       libBlock = software_base.BlockGroup.Blocks.CreateFrom(typeVersion)
 
       _consoleArr.append("SinaSpeedTest")
 
       # DrivesData
-
+      # Open the DrivesData.xml file  
       tree = ET.parse('./xml/DrivesData.xml')
       root = tree.getroot()
 
+      # For loop for iterating over 'SW.Blocks.GlobalDB' from the file.
       for item in root.findall('SW.Blocks.GlobalDB'):
           attributeList=item.find('AttributeList')
           Interface=attributeList.find('Interface')
           Sections=Interface.find('Sections')
           Section=Sections.find('Section')
 
-      
+          # List of device names.
           db_array = _name
           loopMax = len(_name)
 
+          # For loop for iterating over device names
           for i in range(loopMax):
               
-              # plc tags
+              # System constants
               plcTagTableSystemGroup = software_base.TagTableGroup
               constant1 = plcTagTableSystemGroup.TagTables[0].SystemConstants.Find(db_array[i]+"~PROFINET_interface~ModuleAccessPoint")
               constant2 = plcTagTableSystemGroup.TagTables[0].SystemConstants.Find(db_array[i]+"~PROFINET_interface~Standard_telegram_1")
 
-
-
+              # Add the XML structure below to the 'Section'.
               member = f"""
         <Member Name="{db_array[i]}" Datatype="&quot;typeSinaSpeedInterface&quot;" Remanence="NonRetain" Accessibility="Public">
               <AttributeList>
@@ -951,7 +963,7 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):
               new_field = ET.fromstring(member)
               Section.insert(1, new_field)
 
-
+      # Write the 'DrivesData.xml' file
       tree.write("C:\\openness-app\\DrivesData.xml", encoding='unicode')
 
       with open("C:\\openness-app\\DrivesData.xml") as f:
@@ -963,6 +975,7 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):
       index = 0
       for toisto in lines:
           if lines[index].find('linkki'):
+            # replace 'linkki' to 'http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v4'
             lines[index] = lines[index].replace('linkki', 'xmlns')
             index = index + 1
 
@@ -973,31 +986,30 @@ def async_funcExcel(_type, _name, _path, _consoleArr, dllPath, libPath, ui):
 
       _consoleArr.append("DrivesData")
 
+      # Importing the xml files back in to the project
       plc_block2 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\Drives.xml'), tia.ImportOptions.Override)
       unit_block1 = software_base.TypeGroup.Types.Import(FileInfo('C:\\openness-app\\typeSinaSpeedInterface.xml'), tia.ImportOptions.Override)
       plc_block1 = software_base.BlockGroup.Blocks.Import(FileInfo('C:\\openness-app\\DrivesData.xml'), tia.ImportOptions.Override)
     
-      _consoleArr.append("export xml")
+      _consoleArr.append("Importing xmls")
 
       blockComposition = software_base.BlockGroup.Blocks
       isAutoNumber = True
       instanceOfName = "SinaSpeedTest"
       number = 1
 
-      # sinaSpeedTest
-      index = 0
+      # CreateInstanceDB
       for i in range(len(_name)):
         iDBName = f"Inst{_name[i]}"    
         iDbBlock = blockComposition.CreateInstanceDB(iDBName, isAutoNumber, number, instanceOfName)
-        index = index + 1
-
 
       _consoleArr.append("CreateInstanceDB")
 
-
+      # Demo complete!
       print('Demo complete!')
       _consoleArr.append('Demo complete!')
 
+      # Dispose
       mytia.Dispose()
 
   except Exception as e:
