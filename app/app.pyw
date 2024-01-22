@@ -71,10 +71,21 @@ def delete():
 
     return jsonify({'type':_typeArr, 'name':_nameArr})
 
+# delete device (excel page)
+@app.route("/delete2/", methods=["POST"])
+def delete2():
+ 
+    name = request.form['name']
+    name = name.capitalize()
+    index = _nameArr.index(name)
+    _nameArr.remove(name)
+    _typeArr.pop(index)
+
+    return jsonify({'type':_typeArr, 'name':_nameArr})
+
 # load paths
 @app.route("/load/")
 def load():
-
 
     global mypath 
     global dllpath
@@ -295,6 +306,13 @@ def tiaportal():
 # get console
 @app.route("/console/")
 def console():
+     return render_template("console.html")
+
+# clear console
+@app.route("/clearConsole/")
+def clearConsole():
+     global _consoleArr
+     _consoleArr.clear()
      return render_template("console.html")
 
 # get devices

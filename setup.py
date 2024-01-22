@@ -14,6 +14,7 @@ setup(name='openness',
           'flaskwebgui',
           'pythonnet',
           'requests',
-          'et-xmlfile'
+          'et-xmlfile',
+          'treelib'
       ],
       zip_safe=False)

@@ -2,6 +2,18 @@ let arr = [];
 
 let keys = []
 
+function clear_func() {
+
+    $.ajax({
+        type: 'GET',
+        url: '/clearConsole/',
+        success: function(response) {
+            console.log("update");
+        }
+     });
+
+}
+
 function addCommand(e) {   
 
     if(e.keyCode === 13){
@@ -83,6 +95,6 @@ $(document).ready(function() {
             }
          });
     
-    }, 5000);
+    }, 1000);
 
 });

@@ -1,3 +1,36 @@
+function select(name) {
+   console.log(name);
+
+   $.ajax({
+      type: 'POST',
+      url: '/delete2/',
+      data: { "name": name },
+      success: function (response) {
+
+         let typeArr = response.type;
+         let nameArr = response.name;
+
+         const laskuri = document.getElementsByClassName("laskuri");
+         const panel = document.getElementsByClassName("panel panel-primary");
+
+         let myHTML = '';
+
+         for (let i = 0; i < typeArr.length; i++) {
+
+            myHTML += '<div class="panel-heading">' + nameArr[i] + '<img id=' + nameArr[i] + ' src="static/images/delete.png" alt="delete-button" width="20" height="20" style="float: right;" onclick="select(this.id)"></div>';
+            myHTML += '<div class="panel-body">' + typeArr[i] + '</div>';
+
+         }
+
+         panel[0].innerHTML = myHTML
+
+         laskuri[0].innerHTML = '<h4>Added devices (' + typeArr.length + ')</h4>';
+
+      }
+
+   });
+
+}
 
 $(document).ready(function () {
 
